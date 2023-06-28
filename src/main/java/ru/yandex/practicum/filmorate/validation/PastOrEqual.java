@@ -13,8 +13,12 @@ import java.time.format.DateTimeFormatter;
 @Constraint(validatedBy = MinimumDateValidator.class)
 public @interface PastOrEqual {
     String date() default "1980-01-01";
+
     String format() default "yyyy-MM-dd";
+
     String message() default "Дата не должна быть ранее {date}";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }

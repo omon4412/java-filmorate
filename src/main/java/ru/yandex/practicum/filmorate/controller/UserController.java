@@ -19,7 +19,7 @@ public class UserController {
     private int lastId = 0;
 
     @DeleteMapping
-    public void clearUsers(){
+    public void clearUsers() {
         users.clear();
         lastId = 0;
         log.debug("Пользователи очищены");

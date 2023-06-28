@@ -12,10 +12,13 @@ import java.time.LocalDate;
 public class User {
     protected int id;
 
-    @NonNull @NotBlank @Email
+    @NonNull
+    @NotBlank
+    @Email
     protected String email;
 
-    @NonNull @NotBlank
+    @NonNull
+    @NotBlank
     protected String login;
 
     protected String name;
