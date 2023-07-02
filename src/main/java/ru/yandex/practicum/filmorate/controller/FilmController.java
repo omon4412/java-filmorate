@@ -2,7 +2,9 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.web.bind.annotation.*;
+
 import ru.yandex.practicum.filmorate.exception.FilmAlreadyExistException;
 import ru.yandex.practicum.filmorate.exception.FilmNotExistException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -25,6 +27,13 @@ public class FilmController {
     public Collection<Film> getAllFilmList() {
         log.debug("Количество фильмов - {}", films.size());
         return films.values();
+    }
+
+    @DeleteMapping
+    public void clearUsers() {
+        films.clear();
+        lastId = 0;
+        log.debug("Фильмы очищены");
     }
 
     @PostMapping

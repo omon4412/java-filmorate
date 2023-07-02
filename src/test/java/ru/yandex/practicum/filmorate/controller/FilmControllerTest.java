@@ -2,21 +2,30 @@ package ru.yandex.practicum.filmorate.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.*;
+import org.springframework.test.web.servlet.MockMvc;
+
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.util.LocalDateAdapter;
 
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureMockMvc
 class FilmControllerTest {
     @LocalServerPort
     private int port;
@@ -24,7 +33,8 @@ class FilmControllerTest {
     @Autowired
     private TestRestTemplate restTemplate;
     private static final HttpHeaders headers = new HttpHeaders();
-
+    @Autowired
+    private MockMvc mockMvc;
     private String baseUrl;
     public String endPoint = "/films";
 
@@ -35,9 +45,7 @@ class FilmControllerTest {
     @BeforeEach
     public void initBeforeTest() {
         baseUrl = "http://localhost:" + port;
-        testFilm = new Film();
-        testFilm.setName("Test film");
-        testFilm.setReleaseDate(LocalDate.now().minusMonths(1));
+        testFilm = new Film("Test film", LocalDate.now().minusMonths(1));
         testFilm.setDuration(100);
         gson = new GsonBuilder()
                 .setPrettyPrinting()
@@ -45,6 +53,14 @@ class FilmControllerTest {
                 .serializeNulls()
                 .create();
         headers.setContentType(MediaType.APPLICATION_JSON);
+
+    }
+
+    @AfterEach
+    void clearFilms() throws Exception {
+        mockMvc.perform(delete(baseUrl + endPoint)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -63,15 +79,11 @@ class FilmControllerTest {
 
     @Test
     public void shouldNotAddFilmWithoutName() {
-        testFilm.setName(null);
+        final NullPointerException exception = assertThrows(
+                NullPointerException.class,
+                () -> testFilm.setName(null));
 
-        String jsonFilm = gson.toJson(testFilm);
-        HttpEntity<String> requestEntity = new HttpEntity<>(jsonFilm, headers);
-
-        ResponseEntity<String> response = restTemplate.exchange(baseUrl + endPoint,
-                HttpMethod.POST, requestEntity, String.class);
-
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("name is marked non-null but is null", exception.getMessage());
     }
 
     @Test
@@ -123,5 +135,73 @@ class FilmControllerTest {
                 HttpMethod.POST, requestEntity, String.class);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    public void shouldGet3Films() throws Exception {
+        String jsonFilm = gson.toJson(testFilm);
+
+        mockMvc.perform(post(baseUrl + endPoint)
+                        .content(jsonFilm)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        testFilm.setName("Film 1");
+        jsonFilm = gson.toJson(testFilm);
+        mockMvc.perform(post(baseUrl + endPoint)
+                        .content(jsonFilm)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        testFilm.setName("Film 2");
+        jsonFilm = gson.toJson(testFilm);
+        mockMvc.perform(post(baseUrl + endPoint)
+                        .content(jsonFilm)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        var result = mockMvc.perform(get(baseUrl + endPoint)
+                        .content(jsonFilm)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        JsonElement jsonElement = JsonParser.parseString(result);
+        var jsonArray = jsonElement.getAsJsonArray();
+        assertEquals(3, jsonArray.size());
+    }
+
+    @Test
+    public void shouldUpdateFilm() throws Exception {
+        String jsonFilm = gson.toJson(testFilm);
+
+        mockMvc.perform(post(baseUrl + endPoint)
+                        .content(jsonFilm)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        Film film = new Film("New name", LocalDate.now().minusMonths(10));
+        film.setId(1);
+        film.setDuration(12);
+        jsonFilm = gson.toJson(film);
+
+        var result = mockMvc.perform(put(baseUrl + endPoint).content(jsonFilm)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()).andReturn().
+                getResponse().getContentAsString();
+
+        JsonElement jsonElement = JsonParser.parseString(result);
+        Film returnedFilm = gson.fromJson(jsonElement, Film.class);
+        assertEquals(film.getName(), returnedFilm.getName());
+    }
+
+    @Test
+    public void shouldNotUpdateUserWithWrongId() throws Exception {
+        testFilm.setId(456456456);
+        String jsonUser = gson.toJson(testFilm);
+
+        mockMvc.perform(put(baseUrl + endPoint).content(jsonUser)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 }

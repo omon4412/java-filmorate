@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-
 import org.springframework.http.*;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -24,6 +23,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -44,7 +44,8 @@ class UserControllerTest {
     @BeforeEach
     public void initBeforeTest() {
         baseUrl = "http://localhost:" + port + endPoint;
-        testUser = new User("II@email.test", "admin");
+        testUser = new User("II@email.test", "admin",
+                LocalDate.now().minusMonths(10));
         testUser.setBirthday(LocalDate.ofYearDay(2000, 256));
 
         gson = new GsonBuilder()
@@ -142,5 +143,39 @@ class UserControllerTest {
         JsonElement jsonElement = JsonParser.parseString(result);
         var jsonArray = jsonElement.getAsJsonArray();
         assertEquals(3, jsonArray.size());
+    }
+
+    @Test
+    public void shouldUpdateUser() throws Exception {
+        String jsonUser = gson.toJson(testUser);
+
+        mockMvc.perform(post(baseUrl)
+                        .content(jsonUser)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        User user = new User("newMail@g.ru", testUser.getLogin(), LocalDate.now().minusMonths(10));
+        user.setId(1);
+        jsonUser = gson.toJson(user);
+
+        var result = mockMvc.perform(put(baseUrl).content(jsonUser)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()).andReturn().
+                getResponse().getContentAsString();
+
+        JsonElement jsonElement = JsonParser.parseString(result);
+        User returnedUser = gson.fromJson(jsonElement, User.class);
+        assertEquals(testUser.getLogin(), returnedUser.getLogin());
+        assertEquals("newMail@g.ru", returnedUser.getEmail());
+    }
+
+    @Test
+    public void shouldNotUpdateUserWithWrongId() throws Exception {
+        testUser.setId(456456456);
+        String jsonUser = gson.toJson(testUser);
+
+        mockMvc.perform(put(baseUrl).content(jsonUser)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 }
