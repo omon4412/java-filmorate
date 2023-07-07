@@ -7,6 +7,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -44,7 +45,7 @@ class UserControllerTest {
     @BeforeEach
     public void initBeforeTest() {
         baseUrl = "http://localhost:" + port + endPoint;
-        testUser = new User("II@email.test", "admin",
+        testUser = new User("admin@email.test", "admin",
                 LocalDate.now().minusMonths(10));
         testUser.setBirthday(LocalDate.ofYearDay(2000, 256));
 
@@ -92,8 +93,79 @@ class UserControllerTest {
     }
 
     @Test
-    public void shouldNotAddUserWithWrongEmail() throws Exception {
+    public void shouldNotAddUser_WithWrongLogin_1() throws Exception {
+        testUser.setLogin("Testlogin--=");
+        String jsonUser = gson.toJson(testUser);
+
+        mockMvc.perform(post(baseUrl).content(jsonUser)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldNotAddUser_WithWrongLogin_2() throws Exception {
+        testUser.setLogin("#$2dfs%");
+        String jsonUser = gson.toJson(testUser);
+
+        mockMvc.perform(post(baseUrl).content(jsonUser)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldNotAddUser_WithWrongLogin_3() throws Exception {
+        testUser.setLogin("dff dsfsd");
+        String jsonUser = gson.toJson(testUser);
+
+        mockMvc.perform(post(baseUrl).content(jsonUser)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldNotAddUser_WithWrongEmail_1() throws Exception {
         testUser.setEmail("wrong@@@");
+        String jsonUser = gson.toJson(testUser);
+
+        mockMvc.perform(post(baseUrl).content(jsonUser)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldNotAddUser_WithWrongEmail_2() throws Exception {
+        testUser.setEmail("1@1.1");
+        String jsonUser = gson.toJson(testUser);
+
+        mockMvc.perform(post(baseUrl).content(jsonUser)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldNotAddUser_WithWrongEmail_3() throws Exception {
+        testUser.setEmail("user-name@domain.com.");
+        String jsonUser = gson.toJson(testUser);
+
+        mockMvc.perform(post(baseUrl).content(jsonUser)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldNotAddUser_WithWrongEmail_4() throws Exception {
+        testUser.setEmail("username@.com");
+        String jsonUser = gson.toJson(testUser);
+
+        mockMvc.perform(post(baseUrl).content(jsonUser)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("Проверка на отсутсвие кириллицы в почте")
+    public void shouldNotAddUser_WithWrongEmail_5() throws Exception {
+        testUser.setEmail("пользователь@майл.com");
         String jsonUser = gson.toJson(testUser);
 
         mockMvc.perform(post(baseUrl).content(jsonUser)
@@ -154,7 +226,7 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        User user = new User("newMail@g.ru", testUser.getLogin(), LocalDate.now().minusMonths(10));
+        User user = new User("newMail@goog.ru", testUser.getLogin(), LocalDate.now().minusMonths(10));
         user.setId(1);
         jsonUser = gson.toJson(user);
 
@@ -166,7 +238,7 @@ class UserControllerTest {
         JsonElement jsonElement = JsonParser.parseString(result);
         User returnedUser = gson.fromJson(jsonElement, User.class);
         assertEquals(testUser.getLogin(), returnedUser.getLogin());
-        assertEquals("newMail@g.ru", returnedUser.getEmail());
+        assertEquals("newMail@goog.ru", returnedUser.getEmail());
     }
 
     @Test
