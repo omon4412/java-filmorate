@@ -11,7 +11,7 @@ import java.time.LocalDate;
 
 @Data
 public class User {
-    protected int id;
+    protected int id = -1;
 
     @NonNull
     @NotBlank

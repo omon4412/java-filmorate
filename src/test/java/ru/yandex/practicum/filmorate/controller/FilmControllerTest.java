@@ -37,9 +37,7 @@ class FilmControllerTest {
     private MockMvc mockMvc;
     private String baseUrl;
     public String endPoint = "/films";
-
     public static Film testFilm;
-
     public static Gson gson;
 
     @BeforeEach
@@ -53,7 +51,6 @@ class FilmControllerTest {
                 .serializeNulls()
                 .create();
         headers.setContentType(MediaType.APPLICATION_JSON);
-
     }
 
     @AfterEach
