@@ -1,22 +1,15 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.DataStorage;
 
-import java.util.Collection;
 import java.util.Map;
 
-public interface FilmStorage {
+/**
+ * Интерфейс, имплементируеммый от {@link DataStorage}
+ */
+public interface FilmStorage extends DataStorage<Film> {
+    Map<Integer, Film> getFilmsMap();
 
-    Film addFilm(Film film);
-
-    Film updateFilm(Film film);
-
-    int deleteFilm(Film film);
-
-    Collection<Film> getAllFilmList();
-
-    Map<Integer,Film> getFilmsMap();
-
-    int clearFilms();
-
+    Film getFilmById(int id);
 }

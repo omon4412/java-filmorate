@@ -8,8 +8,12 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Адаптер для роботы с {@link LocalDate}
+ * Нужно для использования свого сериализатора и дессериализатора
+ */
 public class LocalDateAdapter extends TypeAdapter<LocalDate> {
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Constants.dataTimeFormat);
 
     @Override
     public void write(final JsonWriter jsonWriter, final LocalDate localDate) throws IOException {

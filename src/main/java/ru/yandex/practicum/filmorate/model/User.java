@@ -1,7 +1,11 @@
 package ru.yandex.practicum.filmorate.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 import lombok.NonNull;
+import ru.yandex.practicum.filmorate.validation.LocalDateDeserializer;
+import ru.yandex.practicum.filmorate.validation.LocalDateSerializer;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -28,5 +32,7 @@ public class User {
 
     @Past
     @NonNull
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
     protected LocalDate birthday;
 }

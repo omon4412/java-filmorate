@@ -8,6 +8,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Реализация {@link FilmStorage}
+ */
 @Component
 @Slf4j
 public class InMemoryFilmStorage implements FilmStorage {
@@ -19,7 +22,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film addFilm(Film film) {
+    public Film add(Film film) {
         film.setId(generateId());
         films.put(film.getId(), film);
         log.debug("Фильм добавлен - " + film);
@@ -27,19 +30,19 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film updateFilm(Film film) {
+    public Film update(Film film) {
         films.put(film.getId(), film);
         log.debug("Фильм обновлён - " + film);
         return film;
     }
 
     @Override
-    public int deleteFilm(Film film) {
-        return -1;
+    public Film delete(Film film) {
+        return null;
     }
 
     @Override
-    public Collection<Film> getAllFilmList() {
+    public Collection<Film> getAllObjList() {
         log.debug("Количество фильмов - {}", films.size());
         return films.values();
     }
@@ -50,7 +53,14 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public int clearFilms() {
+    public Film getFilmById(int id) {
+        var film = films.get(id);
+        log.debug("Получен фильм " + film);
+        return film;
+    }
+
+    @Override
+    public int clearAll() {
         int count = films.size();
         films.clear();
         lastId = 0;

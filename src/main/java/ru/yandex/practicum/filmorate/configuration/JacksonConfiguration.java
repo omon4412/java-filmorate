@@ -1,0 +1,30 @@
+package ru.yandex.practicum.filmorate.configuration;
+
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import ru.yandex.practicum.filmorate.validation.LocalDateDeserializer;
+import ru.yandex.practicum.filmorate.validation.LocalDateSerializer;
+
+import java.time.LocalDate;
+
+/**
+ * Конфигурация для Jackson
+ * Нужно для использования свого сериализатора и дессериализатора
+ */
+@Configuration
+public class JacksonConfiguration {
+    @Bean
+    public ObjectMapper objectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.findAndRegisterModules();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.registerModule(new SimpleModule().addDeserializer(LocalDate.class, new LocalDateDeserializer()));
+        objectMapper.registerModule(new SimpleModule().addSerializer(LocalDate.class, new LocalDateSerializer()));
+        return objectMapper;
+    }
+}

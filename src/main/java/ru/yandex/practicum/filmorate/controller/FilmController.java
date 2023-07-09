@@ -1,12 +1,9 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import ru.yandex.practicum.filmorate.exception.FilmAlreadyExistException;
-import ru.yandex.practicum.filmorate.exception.FilmNotExistException;
+import ru.yandex.practicum.filmorate.exception.IncorrectParameterException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
@@ -20,7 +17,7 @@ public class FilmController {
     private final FilmService filmService;
 
     @Autowired
-    FilmController(FilmService filmService){
+    FilmController(FilmService filmService) {
         this.filmService = filmService;
     }
 
@@ -35,12 +32,20 @@ public class FilmController {
     }
 
     @PostMapping
-    public Film createFilm(@Valid @RequestBody Film film) throws FilmAlreadyExistException {
-       return filmService.addFilm(film);
+    public Film createFilm(@RequestBody @Valid Film film) {
+        return filmService.addFilm(film);
+    }
+
+    @GetMapping("/{filmId}")
+    public Film getFilmById(@PathVariable int filmId) {
+        if (filmId < 0) {
+            throw new IncorrectParameterException("filmId");
+        }
+        return filmService.getFilmById(filmId);
     }
 
     @PutMapping
-    public Film updateFilm(@Valid @RequestBody Film film) throws FilmNotExistException {
+    public Film updateFilm(@RequestBody @Valid Film film) {
         return filmService.updateFilm(film);
     }
 }

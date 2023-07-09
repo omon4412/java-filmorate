@@ -5,6 +5,9 @@ import javax.validation.ConstraintValidatorContext;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Варидатор для аннатации {@link PastOrEqual}
+ */
 public class MinimumDateValidator implements ConstraintValidator<PastOrEqual, LocalDate> {
     private LocalDate minDate;
 

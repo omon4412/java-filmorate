@@ -2,31 +2,23 @@ package ru.yandex.practicum.filmorate.storage.user;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exception.UserAlreadyExistException;
-import ru.yandex.practicum.filmorate.exception.UserNotExistException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Реализация {@link UserStorage}
+ */
 @Component
 @Slf4j
 public class InMemoryUserStorage implements UserStorage {
-
     private final Map<Integer, User> users = new HashMap<>();
     private int lastId = 0;
 
     @Override
-    public User addUser(User user) {
-        if (users.values().stream().anyMatch(u -> u.getEmail().equals(user.getEmail()))) {
-            log.warn("Пользователь с {} уже существует", user.getEmail());
-            throw new UserAlreadyExistException(
-                    "Пользователь с " + user.getEmail() + " уже существует");
-        }
-        if (user.getName() == null || user.getName().equals("")) {
-            user.setName(user.getLogin());
-        }
+    public User add(User user) {
         user.setId(generateId());
         users.put(user.getId(), user);
         log.debug("Пользователь добавлен - " + user);
@@ -34,39 +26,45 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User updateUser(User user) {
-        if (!users.containsKey(user.getId())) {
-            log.warn("Пользователя с id {} не существует", user.getId());
-            throw new UserNotExistException(
-                    "Пользователя с id " + user.getId() + " не существует");
-        }
-        if (user.getName() == null) {
-            user.setName(user.getLogin());
-        }
+    public User update(User user) {
         users.put(user.getId(), user);
         log.debug("Пользователь обновлён - " + user);
         return user;
     }
 
     @Override
-    public User deleteUser(User user) {
+    public User delete(User user) {
         return null;
     }
 
     @Override
-    public void clearUsers() {
+    public int clearAll() {
+        int count = users.size();
         users.clear();
         lastId = 0;
         log.debug("Пользователи очищены");
+        return count;
     }
 
     @Override
-    public Collection<User> getAllUserList() {
+    public Collection<User> getAllObjList() {
         log.debug("Пользователей - {}", users.size());
         return users.values();
     }
 
     protected int generateId() {
         return ++lastId;
+    }
+
+    @Override
+    public Map<Integer, User> getUsersMap() {
+        return users;
+    }
+
+    @Override
+    public User getUserById(int id) {
+        var user = users.get(id);
+        log.debug("Получен пользователь " + user);
+        return user;
     }
 }

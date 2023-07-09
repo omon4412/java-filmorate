@@ -29,10 +29,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 class UserControllerTest {
-
     private static final int port = 8080;
 
     @Autowired
@@ -73,7 +72,7 @@ class UserControllerTest {
     }
 
     @Test
-    public void shouldAddUserWithoutName() throws Exception {
+    public void shouldAddUser_WithoutName() throws Exception {
         testUser.setName(null);
         String jsonUser = gson.toJson(testUser);
 
@@ -83,7 +82,7 @@ class UserControllerTest {
     }
 
     @Test
-    public void shouldAddUserWithEmptyName() throws Exception {
+    public void shouldAddUser_WithEmptyName() throws Exception {
         testUser.setName("");
         String jsonUser = gson.toJson(testUser);
 
@@ -174,7 +173,7 @@ class UserControllerTest {
     }
 
     @Test
-    public void shouldNotAddUserWithWrongDate() throws Exception {
+    public void shouldNotAddUser_WithWrongDate() throws Exception {
         testUser.setBirthday(LocalDate.now().plusDays(1));
         String jsonUser = gson.toJson(testUser);
 
@@ -242,12 +241,59 @@ class UserControllerTest {
     }
 
     @Test
-    public void shouldNotUpdateUserWithWrongId() throws Exception {
+    public void shouldNotUpdateUser_WithWrongId() throws Exception {
         testUser.setId(456456456);
         String jsonUser = gson.toJson(testUser);
 
         mockMvc.perform(put(baseUrl).content(jsonUser)
                         .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void shouldGetUser() throws Exception {
+        String jsonUser = gson.toJson(testUser);
+
+        mockMvc.perform(post(baseUrl)
+                        .content(jsonUser)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        var user = mockMvc.perform(get(baseUrl + "/1"))
+                .andExpect(status().isOk()).andReturn()
+                .getResponse().getContentAsString();
+
+        JsonElement jsonElement = JsonParser.parseString(user);
+        User returnedUser = gson.fromJson(jsonElement, User.class);
+        testUser.setId(1);
+        testUser.setName(testUser.getLogin());
+        assertEquals(testUser, returnedUser);
+    }
+
+    @Test
+    public void shouldNotGetUser_IfIdNegative() throws Exception {
+        String jsonUser = gson.toJson(testUser);
+
+        mockMvc.perform(post(baseUrl)
+                        .content(jsonUser)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get(baseUrl + "/-1"))
+                .andExpect(status().isBadRequest());
+
+    }
+
+    @Test
+    public void shouldNotGetUser_IfIdIsWrong() throws Exception {
+        String jsonUser = gson.toJson(testUser);
+
+        mockMvc.perform(post(baseUrl)
+                        .content(jsonUser)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get(baseUrl + "/654656"))
                 .andExpect(status().isNotFound());
     }
 }

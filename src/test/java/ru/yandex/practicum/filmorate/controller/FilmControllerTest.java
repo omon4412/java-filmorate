@@ -42,7 +42,7 @@ class FilmControllerTest {
 
     @BeforeEach
     public void initBeforeTest() {
-        baseUrl = "http://localhost:" + port;
+        baseUrl = "http://localhost:" + port + endPoint;
         testFilm = new Film("Test film", LocalDate.now().minusMonths(1));
         testFilm.setDuration(100);
         gson = new GsonBuilder()
@@ -55,7 +55,7 @@ class FilmControllerTest {
 
     @AfterEach
     void clearFilms() throws Exception {
-        mockMvc.perform(delete(baseUrl + endPoint)
+        mockMvc.perform(delete(baseUrl)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
@@ -65,7 +65,7 @@ class FilmControllerTest {
         String jsonFilm = gson.toJson(testFilm);
         HttpEntity<String> requestEntity = new HttpEntity<>(jsonFilm, headers);
 
-        ResponseEntity<String> response = restTemplate.exchange(baseUrl + endPoint,
+        ResponseEntity<String> response = restTemplate.exchange(baseUrl,
                 HttpMethod.POST, requestEntity, String.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -75,7 +75,7 @@ class FilmControllerTest {
     }
 
     @Test
-    public void shouldNotAddFilmWithoutName() {
+    public void shouldNotAddFilm_WithoutName() {
         final NullPointerException exception = assertThrows(
                 NullPointerException.class,
                 () -> testFilm.setName(null));
@@ -84,31 +84,31 @@ class FilmControllerTest {
     }
 
     @Test
-    public void shouldNotAddFilmWithEmptyName() {
+    public void shouldNotAddFilm_WithEmptyName() {
         testFilm.setName("");
         String jsonFilm = gson.toJson(testFilm);
         HttpEntity<String> requestEntity = new HttpEntity<>(jsonFilm, headers);
 
-        ResponseEntity<String> response = restTemplate.exchange(baseUrl + endPoint,
+        ResponseEntity<String> response = restTemplate.exchange(baseUrl,
                 HttpMethod.POST, requestEntity, String.class);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
     @Test
-    public void shouldNotAddFilmWithNegativeDuration() {
+    public void shouldNotAddFilm_WithNegativeDuration() {
         testFilm.setDuration(-100);
         String jsonFilm = gson.toJson(testFilm);
         HttpEntity<String> requestEntity = new HttpEntity<>(jsonFilm, headers);
 
-        ResponseEntity<String> response = restTemplate.exchange(baseUrl + endPoint,
+        ResponseEntity<String> response = restTemplate.exchange(baseUrl,
                 HttpMethod.POST, requestEntity, String.class);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
     @Test
-    public void shouldNotAddFilmWithLongDescription() {
+    public void shouldNotAddFilm_WithLongDescription() {
         String fishText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
                 "Sed tempor nisl nec justo faucibus, in consequat felis condimentum. " +
                 "Curabitur id metus lobortis, eleifend enim nec, fringilla leo. Suspendisse scelerisqu.";
@@ -116,19 +116,19 @@ class FilmControllerTest {
         String jsonFilm = gson.toJson(testFilm);
         HttpEntity<String> requestEntity = new HttpEntity<>(jsonFilm, headers);
 
-        ResponseEntity<String> response = restTemplate.exchange(baseUrl + endPoint,
+        ResponseEntity<String> response = restTemplate.exchange(baseUrl,
                 HttpMethod.POST, requestEntity, String.class);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
     @Test
-    public void shouldNotAddFilmWithWrongDate() {
+    public void shouldNotAddFilm_WithWrongDate() {
         testFilm.setReleaseDate(LocalDate.parse("1700-01-01"));
         String jsonFilm = gson.toJson(testFilm);
         HttpEntity<String> requestEntity = new HttpEntity<>(jsonFilm, headers);
 
-        ResponseEntity<String> response = restTemplate.exchange(baseUrl + endPoint,
+        ResponseEntity<String> response = restTemplate.exchange(baseUrl,
                 HttpMethod.POST, requestEntity, String.class);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -138,26 +138,26 @@ class FilmControllerTest {
     public void shouldGet3Films() throws Exception {
         String jsonFilm = gson.toJson(testFilm);
 
-        mockMvc.perform(post(baseUrl + endPoint)
+        mockMvc.perform(post(baseUrl)
                         .content(jsonFilm)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         testFilm.setName("Film 1");
         jsonFilm = gson.toJson(testFilm);
-        mockMvc.perform(post(baseUrl + endPoint)
+        mockMvc.perform(post(baseUrl)
                         .content(jsonFilm)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         testFilm.setName("Film 2");
         jsonFilm = gson.toJson(testFilm);
-        mockMvc.perform(post(baseUrl + endPoint)
+        mockMvc.perform(post(baseUrl)
                         .content(jsonFilm)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        var result = mockMvc.perform(get(baseUrl + endPoint)
+        var result = mockMvc.perform(get(baseUrl)
                         .content(jsonFilm)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -172,7 +172,7 @@ class FilmControllerTest {
     public void shouldUpdateFilm() throws Exception {
         String jsonFilm = gson.toJson(testFilm);
 
-        mockMvc.perform(post(baseUrl + endPoint)
+        mockMvc.perform(post(baseUrl)
                         .content(jsonFilm)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -182,7 +182,7 @@ class FilmControllerTest {
         film.setDuration(12);
         jsonFilm = gson.toJson(film);
 
-        var result = mockMvc.perform(put(baseUrl + endPoint).content(jsonFilm)
+        var result = mockMvc.perform(put(baseUrl).content(jsonFilm)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()).andReturn().
                 getResponse().getContentAsString();
@@ -193,12 +193,58 @@ class FilmControllerTest {
     }
 
     @Test
-    public void shouldNotUpdateUserWithWrongId() throws Exception {
+    public void shouldNotUpdateFilm_WithWrongId() throws Exception {
         testFilm.setId(456456456);
-        String jsonUser = gson.toJson(testFilm);
+        String jsonfilm = gson.toJson(testFilm);
 
-        mockMvc.perform(put(baseUrl + endPoint).content(jsonUser)
+        mockMvc.perform(put(baseUrl).content(jsonfilm)
                         .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void shouldGetFilm() throws Exception {
+        String jsonfilm = gson.toJson(testFilm);
+
+        mockMvc.perform(post(baseUrl)
+                        .content(jsonfilm)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        var film = mockMvc.perform(get(baseUrl + "/1"))
+                .andExpect(status().isOk()).andReturn()
+                .getResponse().getContentAsString();
+
+        JsonElement jsonElement = JsonParser.parseString(film);
+        Film returnedFilm = gson.fromJson(jsonElement, Film.class);
+        testFilm.setId(1);
+        //testFilm.setName(testFilm.getLogin());
+        assertEquals(testFilm, returnedFilm);
+    }
+
+    @Test
+    public void shouldNotGetFilm_IfIdNegative() throws Exception {
+        String jsonFilm = gson.toJson(testFilm);
+
+        mockMvc.perform(post(baseUrl)
+                        .content(jsonFilm)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get(baseUrl + "/-1"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldNotGetFilm_IfIdIsWrong() throws Exception {
+        String jsonFilm = gson.toJson(testFilm);
+
+        mockMvc.perform(post(baseUrl)
+                        .content(jsonFilm)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get(baseUrl + "/654656"))
                 .andExpect(status().isNotFound());
     }
 }

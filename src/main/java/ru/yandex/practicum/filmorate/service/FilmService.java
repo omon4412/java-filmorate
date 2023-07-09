@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.FilmAlreadyExistException;
-import ru.yandex.practicum.filmorate.exception.FilmNotExistException;
+import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
@@ -15,7 +15,6 @@ import java.util.Map;
 @Service
 @Slf4j
 public class FilmService {
-
     private final FilmStorage filmStorage;
     private Map<Integer, Film> films = new HashMap<>();
 
@@ -30,17 +29,27 @@ public class FilmService {
             log.warn("Фильм с {} уже существует", film.getName());
             throw new FilmAlreadyExistException("Фильм с " + film.getName() + " уже существует");
         }
-        return filmStorage.addFilm(film);
+        return filmStorage.add(film);
     }
 
     public Film updateFilm(Film film) {
         pullFromStorage();
-        if (!films.containsKey(film.getId())) {
-            log.warn("Фильм с id {} не существует", film.getId());
-            throw new FilmNotExistException(
-                    "Фильма с id " + film.getId() + " не существует");
+        checkFilmForExists(film.getId());
+        return filmStorage.update(film);
+    }
+
+    public Film getFilmById(int id) {
+        pullFromStorage();
+        checkFilmForExists(id);
+        return filmStorage.getFilmById(id);
+    }
+
+    private void checkFilmForExists(int id) {
+        if (!films.containsKey(id)) {
+            log.warn("Фильм с id {} не существует", id);
+            throw new FilmNotFoundException(
+                    "Фильма с id " + id + " не существует");
         }
-        return filmStorage.updateFilm(film);
     }
 
     private void pullFromStorage() {
@@ -48,10 +57,10 @@ public class FilmService {
     }
 
     public Collection<Film> getAllFilmList() {
-        return filmStorage.getAllFilmList();
+        return filmStorage.getAllObjList();
     }
 
     public int clearFilms() {
-        return filmStorage.clearFilms();
+        return filmStorage.clearAll();
     }
 }
