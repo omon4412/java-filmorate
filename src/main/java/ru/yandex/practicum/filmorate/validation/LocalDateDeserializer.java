@@ -23,7 +23,7 @@ public class LocalDateDeserializer extends JsonDeserializer<LocalDate> {
             return LocalDate.parse(date, DateTimeFormatter.ofPattern(Constants.dataTimeFormat));
         } catch (DateTimeException e) {
             throw new IncorrectParameterException(
-                    "Ошибка десериализации даты LocalDate. Необходимый формат: " + Constants.dataTimeFormat);
+                    "Ошибка десериализации даты LocalDate. Необходимый формат: " + Constants.dataTimeFormat, true);
         }
     }
 }

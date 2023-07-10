@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -24,9 +25,13 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleIncorrectParameterException(final IncorrectParameterException e) {
-        return new ErrorResponse(
-                String.format("Ошибка с полем \"%s\".", e.getParameter())
-        );
+        if (!e.isMessage()) {
+            return new ErrorResponse(
+                    String.format("Ошибка с полем \"%s\".", e.getParameter())
+            );
+        } else {
+            return new ErrorResponse(e.getParameter());
+        }
     }
 
     @ExceptionHandler
@@ -66,14 +71,15 @@ public class ErrorHandler {
     public List<Violation> onConstraintValidationException(
             ConstraintViolationException e
     ) {
-        return e.getConstraintViolations().stream()
-                .map(
-                        violation -> new Violation(
+        List<Violation> collect = e.getConstraintViolations().stream()
+                .map(violation -> new Violation(
                                 violation.getPropertyPath().toString(),
                                 violation.getMessage()
                         )
                 )
                 .collect(Collectors.toList());
+        log.warn(collect.toString());
+        return collect;
     }
 
     @ExceptionHandler
@@ -81,9 +87,11 @@ public class ErrorHandler {
     public List<Violation> onMethodArgumentNotValidException(
             MethodArgumentNotValidException e
     ) {
-        return e.getBindingResult().getFieldErrors().stream()
+        List<Violation> collect = e.getBindingResult().getFieldErrors().stream()
                 .map(violation -> new Violation(violation.getField(), violation.getDefaultMessage()))
                 .collect(Collectors.toList());
+        log.warn(collect.toString());
+        return collect;
     }
 
     @ExceptionHandler
@@ -96,6 +104,12 @@ public class ErrorHandler {
         } else {
             throw new RuntimeException();
         }
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
+    public ErrorResponse handleHttpRequestMethodNotSupportedException(final HttpRequestMethodNotSupportedException e) {
+        return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler(Throwable.class)

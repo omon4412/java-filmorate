@@ -3,14 +3,14 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.IncorrectParameterException;
 import ru.yandex.practicum.filmorate.exception.UserAlreadyExistException;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -38,7 +38,6 @@ public class UserService {
     }
 
     public User updateUser(User user) {
-        pullFromStorage();
         checkUserForExists(user.getId());
         if (user.getName() == null) {
             user.setName(user.getLogin());
@@ -46,29 +45,86 @@ public class UserService {
         return userStorage.update(user);
     }
 
-    public User getUserById(int id) {
+    public User deleteUser(int userId) {
         pullFromStorage();
+        checkUserForExists(userId);
+
+        User user = userStorage.getUserById(userId);
+        Set<Integer> friendsIds = user.getFriends();
+
+        friendsIds.stream().map(userStorage::getUserById).forEach(friend -> friend.getFriends().remove(userId));
+        return userStorage.delete(user);
+    }
+
+    public User getUserById(int id) {
         checkUserForExists(id);
         return userStorage.getUserById(id);
     }
 
-    private void checkUserForExists(int id) {
-        if (!users.containsKey(id)) {
-            log.warn("Пользователя с id {} не существует", id);
-            throw new UserNotFoundException(
-                    "Пользователя с id " + id + " не существует");
+    public Collection<User> getAllUserList() {
+        List<User> sortUsers = new ArrayList<>(userStorage.getAllObjList());
+        sortUsers.sort(Comparator.comparing(User::getId));
+        return sortUsers;
+    }
+
+    public int clearUsers() {
+        return userStorage.clearAll();
+    }
+
+    public User addFriendToUser(int userId, int friendId) {
+        if (userId == friendId) {
+            throw new IncorrectParameterException("Нельзя добавить самого себя", true);
         }
+        checkUserForExists(userId);
+        checkUserForExists(friendId);
+
+        User user = userStorage.getUserById(userId);
+        User friend = userStorage.getUserById(friendId);
+
+        user.getFriends().add(friend.getId());
+        friend.getFriends().add(user.getId());
+
+        userStorage.update(friend);
+        return userStorage.update(user);
+    }
+
+    public List<User> getUsersFriends(int userId) {
+        checkUserForExists(userId);
+        User user = userStorage.getUserById(userId);
+        Set<Integer> friendsIds = user.getFriends();
+        return friendsIds.stream()
+                .map(userStorage::getUserById)
+                .sorted(Comparator.comparing(User::getId))
+                .collect(Collectors.toList());
+    }
+
+    public User deleteFriendFromUser(int userId, int friendId) {
+        if (userId == friendId) {
+            throw new IncorrectParameterException("Нельзя удалить самого себя", true);
+        }
+        checkUserForExists(userId);
+        checkUserForExists(friendId);
+
+        User user = userStorage.getUserById(userId);
+        User friend = userStorage.getUserById(friendId);
+
+        user.getFriends().remove(friend.getId());
+        friend.getFriends().remove(user.getId());
+
+        userStorage.update(friend);
+        return userStorage.update(user);
     }
 
     private void pullFromStorage() {
         users = userStorage.getUsersMap();
     }
 
-    public Collection<User> getAllUserList() {
-        return userStorage.getAllObjList();
-    }
-
-    public int clearUsers() {
-        return userStorage.clearAll();
+    private void checkUserForExists(int id) {
+        pullFromStorage();
+        if (!users.containsKey(id)) {
+            log.warn("Пользователя с id={} не существует", id);
+            throw new UserNotFoundException(
+                    "Пользователя с id=" + id + " не существует");
+        }
     }
 }

@@ -1,10 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,22 +8,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.*;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.util.LocalDateAdapter;
 
 import java.time.LocalDate;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
@@ -173,6 +164,19 @@ class UserControllerTest {
     }
 
     @Test
+    public void shouldNotAddUser_IfEmailIsExists() throws Exception {
+        String jsonUser = gson.toJson(testUser);
+
+        mockMvc.perform(post(baseUrl).content(jsonUser)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(post(baseUrl).content(jsonUser)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isConflict());
+    }
+
+    @Test
     public void shouldNotAddUser_WithWrongDate() throws Exception {
         testUser.setBirthday(LocalDate.now().plusDays(1));
         String jsonUser = gson.toJson(testUser);
@@ -271,7 +275,7 @@ class UserControllerTest {
     }
 
     @Test
-    public void shouldNotGetUser_IfIdNegative() throws Exception {
+    public void shouldNotGetUser_IfIdLetter() throws Exception {
         String jsonUser = gson.toJson(testUser);
 
         mockMvc.perform(post(baseUrl)
@@ -279,7 +283,7 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        mockMvc.perform(get(baseUrl + "/-1"))
+        mockMvc.perform(get(baseUrl + "/give2user"))
                 .andExpect(status().isBadRequest());
 
     }
@@ -295,5 +299,242 @@ class UserControllerTest {
 
         mockMvc.perform(get(baseUrl + "/654656"))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void shouldDeleteUser() throws Exception {
+        String jsonUser = gson.toJson(testUser);
+
+        mockMvc.perform(post(baseUrl)
+                        .content(jsonUser)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get(baseUrl + "/1"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(delete(baseUrl + "/1"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get(baseUrl + "/1"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void shouldNotDeleteUser_IfIdIsWord() throws Exception {
+        String jsonUser = gson.toJson(testUser);
+
+        mockMvc.perform(post(baseUrl)
+                        .content(jsonUser)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get(baseUrl + "/1"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(delete(baseUrl + "/user1"))
+                .andExpect(status().isBadRequest());
+
+        mockMvc.perform(get(baseUrl + "/1"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void shouldNotDeleteUser_IfIdIncorrect() throws Exception {
+        String jsonUser = gson.toJson(testUser);
+
+        mockMvc.perform(post(baseUrl)
+                        .content(jsonUser)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get(baseUrl + "/1"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(delete(baseUrl + "/5656656"))
+                .andExpect(status().isNotFound());
+
+        mockMvc.perform(get(baseUrl + "/1"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void shouldDeleteUserFromFriendsList() throws Exception {
+        String jsonUser = gson.toJson(testUser);
+
+        mockMvc.perform(post(baseUrl)
+                        .content(jsonUser)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        testUser.setEmail("some@gg.ru");
+        jsonUser = gson.toJson(testUser);
+
+        mockMvc.perform(post(baseUrl)
+                        .content(jsonUser)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(put(baseUrl + "/1/friends/2"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(delete(baseUrl + "/1"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get(baseUrl + "/1"))
+                .andExpect(status().isNotFound());
+
+        var result = mockMvc.perform(get(baseUrl + "/2/friends"))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+
+        JsonArray jsonArray = JsonParser.parseString(result).getAsJsonArray();
+        assertEquals(0, jsonArray.size());
+    }
+
+    @Test
+    public void shouldAddFriendToUser() throws Exception {
+        String jsonUser = gson.toJson(testUser);
+
+        mockMvc.perform(post(baseUrl)
+                        .content(jsonUser)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        testUser.setEmail("some@gg.ru");
+        jsonUser = gson.toJson(testUser);
+
+        mockMvc.perform(post(baseUrl)
+                        .content(jsonUser)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get(baseUrl + "/1"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get(baseUrl + "/2"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(put(baseUrl + "/1/friends/2"))
+                .andExpect(status().isOk());
+
+        var result = mockMvc.perform(get(baseUrl + "/1/friends"))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+
+        JsonArray jsonArray = JsonParser.parseString(result).getAsJsonArray();
+        var user = jsonArray.get(0).getAsJsonObject();
+        assertEquals(1, jsonArray.size());
+        assertEquals(2, user.get("id").getAsInt());
+
+        result = mockMvc.perform(get(baseUrl + "/2/friends"))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+
+        jsonArray = JsonParser.parseString(result).getAsJsonArray();
+        var friend = jsonArray.get(0).getAsJsonObject();
+        assertEquals(1, jsonArray.size());
+        assertEquals(1, friend.get("id").getAsInt());
+    }
+
+    @Test
+    public void shouldNotAddFriendToUser_IfOneOfIdsNotExists() throws Exception {
+        mockMvc.perform(put(baseUrl + "/1/friends/2"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void shouldNotAddFriendToUser_IfOneOfIdsIsWord() throws Exception {
+        mockMvc.perform(put(baseUrl + "/user/friends/friend"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldNotAddFriendToUser_IfIdHimSelf() throws Exception {
+        String jsonUser = gson.toJson(testUser);
+
+        mockMvc.perform(post(baseUrl)
+                        .content(jsonUser)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get(baseUrl + "/1"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(put(baseUrl + "/1/friends/1"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldDeleteFriendToUser() throws Exception {
+        String jsonUser = gson.toJson(testUser);
+
+        mockMvc.perform(post(baseUrl)
+                        .content(jsonUser)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get(baseUrl + "/1"))
+                .andExpect(status().isOk());
+
+        testUser.setEmail("some@gg.ru");
+        jsonUser = gson.toJson(testUser);
+
+        mockMvc.perform(post(baseUrl)
+                        .content(jsonUser)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get(baseUrl + "/2"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(put(baseUrl + "/1/friends/2"))
+                .andExpect(status().isOk());
+
+        var result = mockMvc.perform(get(baseUrl + "/1/friends"))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+
+        JsonArray jsonArray = JsonParser.parseString(result).getAsJsonArray();
+        var user = jsonArray.get(0).getAsJsonObject();
+        assertEquals(1, jsonArray.size());
+        assertEquals(2, user.get("id").getAsInt());
+
+        result = mockMvc.perform(get(baseUrl + "/2/friends"))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+
+        jsonArray = JsonParser.parseString(result).getAsJsonArray();
+        var friend = jsonArray.get(0).getAsJsonObject();
+        assertEquals(1, jsonArray.size());
+        assertEquals(1, friend.get("id").getAsInt());
+
+        mockMvc.perform(delete(baseUrl + "/1/friends/2"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get(baseUrl + "/1"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get(baseUrl + "/2"))
+                .andExpect(status().isOk());
+
+        result = mockMvc.perform(get(baseUrl + "/1/friends"))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+
+        jsonArray = JsonParser.parseString(result).getAsJsonArray();
+        assertEquals(0, jsonArray.size());
+
+        result = mockMvc.perform(get(baseUrl + "/2/friends"))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+
+        jsonArray = JsonParser.parseString(result).getAsJsonArray();
+        assertEquals(0, jsonArray.size());
+    }
+
+    @Test
+    public void shouldNotDeleteFriendToUser_IfOneOfIdsNotExists() throws Exception {
+        mockMvc.perform(put(baseUrl + "/1/friends/2"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void shouldNotDeleteFriendToUser_IfOneOfIdsIsWord() throws Exception {
+        mockMvc.perform(put(baseUrl + "/user/friends/friend"))
+                .andExpect(status().isBadRequest());
     }
 }

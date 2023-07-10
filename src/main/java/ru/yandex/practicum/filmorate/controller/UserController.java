@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -37,15 +38,55 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public User getUserById(@PathVariable int userId) {
-        if (userId < 0) {
-            throw new IncorrectParameterException("userId");
-        }
-        return userService.getUserById(userId);
+    public User getUserById(@PathVariable String userId) {
+        int userIdInt = getUserIdInt(userId);
+        return userService.getUserById(userIdInt);
     }
 
     @PutMapping
     public User updateUser(@Valid @RequestBody User user) {
         return userService.updateUser(user);
+    }
+
+    @DeleteMapping("/{userId}")
+    public User deleteUser(@PathVariable String userId) {
+        int userIdInt = getUserIdInt(userId);
+        return userService.deleteUser(userIdInt);
+    }
+
+    @PutMapping("/{userId}/friends/{friendId}")
+    public User addFriendToUser(@PathVariable String userId, @PathVariable String friendId) {
+        int userIdInt = getUserIdInt(userId);
+        int friendIdInt = getUserIdInt(friendId);
+        return userService.addFriendToUser(userIdInt, friendIdInt);
+    }
+
+    @DeleteMapping("/{userId}/friends/{friendId}")
+    public User deleteFriendFromUser(@PathVariable String userId, @PathVariable String friendId) {
+        int userIdInt = getUserIdInt(userId);
+        int friendIdInt = getUserIdInt(friendId);
+        return userService.deleteFriendFromUser(userIdInt, friendIdInt);
+    }
+
+    @GetMapping("/{userId}/friends")
+    public List<User> getUsersFriends(@PathVariable String userId) {
+        int userIdInt = getUserIdInt(userId);
+        return userService.getUsersFriends(userIdInt);
+    }
+
+    /**
+     * Преобразование строки id пользователя в число
+     *
+     * @param userId id пользователя
+     * @return id пользователя в формате числа
+     */
+    private int getUserIdInt(String userId) {
+        int userIdInt;
+        try {
+            userIdInt = Integer.parseInt(userId);
+        } catch (NumberFormatException e) {
+            throw new IncorrectParameterException("userId");
+        }
+        return userIdInt;
     }
 }

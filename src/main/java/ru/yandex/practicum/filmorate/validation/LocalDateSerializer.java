@@ -16,13 +16,14 @@ import java.time.format.DateTimeFormatter;
  */
 public class LocalDateSerializer extends JsonSerializer<LocalDate> {
     @Override
-    public void serialize(LocalDate date, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+    public void serialize(LocalDate date, JsonGenerator jsonGenerator,
+                          SerializerProvider serializerProvider) throws IOException {
         try {
             String formattedDate = date.format(DateTimeFormatter.ofPattern(Constants.dataTimeFormat));
             jsonGenerator.writeString(formattedDate);
         } catch (DateTimeException e) {
             throw new IncorrectParameterException(
-                    "Ошибка сериализации даты LocalDate. Необходимый формат: " + Constants.dataTimeFormat);
+                    "Ошибка сериализации даты LocalDate. Необходимый формат: " + Constants.dataTimeFormat, true);
         }
     }
 }
