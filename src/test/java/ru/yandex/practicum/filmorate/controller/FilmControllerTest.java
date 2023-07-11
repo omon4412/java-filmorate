@@ -194,8 +194,8 @@ class FilmControllerTest {
 
         var result = mockMvc.perform(put(filmBaseUrl).content(jsonFilm)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()).andReturn().
-                getResponse().getContentAsString();
+                .andExpect(status().isOk()).andReturn()
+                .getResponse().getContentAsString();
 
         JsonElement jsonElement = JsonParser.parseString(result);
         Film returnedFilm = gson.fromJson(jsonElement, Film.class);
