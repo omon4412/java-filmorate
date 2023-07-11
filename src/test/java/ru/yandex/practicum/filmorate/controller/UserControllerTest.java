@@ -235,8 +235,8 @@ class UserControllerTest {
 
         var result = mockMvc.perform(put(baseUrl).content(jsonUser)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()).andReturn().
-                getResponse().getContentAsString();
+                .andExpect(status().isOk()).andReturn()
+                .getResponse().getContentAsString();
 
         JsonElement jsonElement = JsonParser.parseString(result);
         User returnedUser = gson.fromJson(jsonElement, User.class);
