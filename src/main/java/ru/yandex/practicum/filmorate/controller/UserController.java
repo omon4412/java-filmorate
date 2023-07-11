@@ -74,6 +74,13 @@ public class UserController {
         return userService.getUsersFriends(userIdInt);
     }
 
+    @GetMapping("/{userId}/friends/common/{friendId}")
+    public List<User> getCommonFriends(@PathVariable String userId, @PathVariable String friendId) {
+        int userIdInt = getUserIdInt(userId);
+        int friendIdInt = getUserIdInt(friendId);
+        return userService.getCommonFriends(userIdInt, friendIdInt);
+    }
+
     /**
      * Преобразование строки id пользователя в число
      *

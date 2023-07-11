@@ -37,13 +37,11 @@ public class FilmService {
     }
 
     public Film updateFilm(Film film) {
-        pullFromStorage();
         checkFilmForExists(film.getId());
         return filmStorage.update(film);
     }
 
     public Film getFilmById(int id) {
-        pullFromStorage();
         checkFilmForExists(id);
         return filmStorage.getFilmById(id);
     }
@@ -57,7 +55,6 @@ public class FilmService {
     }
 
     public Film deleteFilm(int filmId) {
-        pullFromStorage();
         checkFilmForExists(filmId);
 
         Film film = filmStorage.getFilmById(filmId);
@@ -91,13 +88,18 @@ public class FilmService {
     public List<Film> getPopularFilms(int count) {
         pullFromStorage();
         List<Film> filmsList = new ArrayList<>(films.values());
-        Comparator<Film> comparator = Comparator.comparing(f->f.getUserLikeIds().size());
+        Comparator<Film> comparator = Comparator.comparing(f -> f.getUserLikeIds().size());
         filmsList.sort(comparator.reversed());
         log.debug("Запрошено {} фильмов", count);
 
         return filmsList.stream().limit(count).collect(Collectors.toList());
     }
 
+    /**
+     * Проверка на существование пользователя
+     *
+     * @param id id Пользователя
+     */
     private void checkUserForExists(int id) {
         Map<Integer, User> users = userStorage.getUsersMap();
         if (!users.containsKey(id)) {
@@ -107,7 +109,13 @@ public class FilmService {
         }
     }
 
+    /**
+     * Проверка на существование фильма
+     *
+     * @param id id Фильма
+     */
     private void checkFilmForExists(int id) {
+        pullFromStorage();
         if (!films.containsKey(id)) {
             log.warn("Фильм с id {} не существует", id);
             throw new FilmNotFoundException(
@@ -115,6 +123,9 @@ public class FilmService {
         }
     }
 
+    /**
+     * Получение всех фильмов из хранилища
+     */
     private void pullFromStorage() {
         films = filmStorage.getFilmsMap();
     }

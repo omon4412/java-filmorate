@@ -435,6 +435,66 @@ class UserControllerTest {
     }
 
     @Test
+    public void shouldAddTwoFriendsToUser() throws Exception {
+        String jsonUser = gson.toJson(testUser);
+
+        mockMvc.perform(post(baseUrl)
+                        .content(jsonUser)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get(baseUrl + "/1"))
+                .andExpect(status().isOk());
+
+        testUser.setEmail("some@gg.ru");
+        jsonUser = gson.toJson(testUser);
+
+        mockMvc.perform(post(baseUrl)
+                        .content(jsonUser)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get(baseUrl + "/2"))
+                .andExpect(status().isOk());
+
+        testUser.setEmail("some3@gg.ru");
+        jsonUser = gson.toJson(testUser);
+
+        mockMvc.perform(post(baseUrl)
+                        .content(jsonUser)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get(baseUrl + "/3"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(put(baseUrl + "/1/friends/2"))
+                .andExpect(status().isOk());
+
+        var result = mockMvc.perform(get(baseUrl + "/1/friends"))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+
+        JsonArray jsonArray = JsonParser.parseString(result).getAsJsonArray();
+        var user = jsonArray.get(0).getAsJsonObject();
+        assertEquals(1, jsonArray.size());
+        assertEquals(2, user.get("id").getAsInt());
+
+        mockMvc.perform(get(baseUrl + "/1/friends/common/3"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(put(baseUrl + "/1/friends/3"))
+                .andExpect(status().isOk());
+
+        result = mockMvc.perform(get(baseUrl + "/1/friends"))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+
+        jsonArray = JsonParser.parseString(result).getAsJsonArray();
+        user = jsonArray.get(0).getAsJsonObject();
+        assertEquals(2, jsonArray.size());
+        assertEquals(2, user.get("id").getAsInt());
+    }
+
+    @Test
     public void shouldNotAddFriendToUser_IfOneOfIdsNotExists() throws Exception {
         mockMvc.perform(put(baseUrl + "/1/friends/2"))
                 .andExpect(status().isNotFound());
@@ -536,5 +596,78 @@ class UserControllerTest {
     public void shouldNotDeleteFriendToUser_IfOneOfIdsIsWord() throws Exception {
         mockMvc.perform(put(baseUrl + "/user/friends/friend"))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldGetCommonFriends() throws Exception {
+        String jsonUser = gson.toJson(testUser);
+
+        mockMvc.perform(post(baseUrl)
+                        .content(jsonUser)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get(baseUrl + "/1"))
+                .andExpect(status().isOk());
+
+        testUser.setEmail("some@gg.ru");
+        jsonUser = gson.toJson(testUser);
+
+        mockMvc.perform(post(baseUrl)
+                        .content(jsonUser)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get(baseUrl + "/2"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(put(baseUrl + "/1/friends/2"))
+                .andExpect(status().isOk());
+
+        var result = mockMvc.perform(get(baseUrl + "/1/friends"))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+
+        JsonArray jsonArray = JsonParser.parseString(result).getAsJsonArray();
+        var user = jsonArray.get(0).getAsJsonObject();
+        assertEquals(1, jsonArray.size());
+        assertEquals(2, user.get("id").getAsInt());
+
+        result = mockMvc.perform(get(baseUrl + "/2/friends"))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+
+        jsonArray = JsonParser.parseString(result).getAsJsonArray();
+        var friend = jsonArray.get(0).getAsJsonObject();
+        assertEquals(1, jsonArray.size());
+        assertEquals(1, friend.get("id").getAsInt());
+
+        testUser.setEmail("some3@gg.ru");
+        jsonUser = gson.toJson(testUser);
+
+        mockMvc.perform(post(baseUrl)
+                        .content(jsonUser)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get(baseUrl + "/3"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(put(baseUrl + "/3/friends/2"))
+                .andExpect(status().isOk());
+
+        result = mockMvc.perform(get(baseUrl + "/3/friends"))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+
+        jsonArray = JsonParser.parseString(result).getAsJsonArray();
+        user = jsonArray.get(0).getAsJsonObject();
+        assertEquals(1, jsonArray.size());
+        assertEquals(2, user.get("id").getAsInt());
+
+        result = mockMvc.perform(get(baseUrl + "/3/friends/common/1"))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+
+        jsonArray = JsonParser.parseString(result).getAsJsonArray();
+        user = jsonArray.get(0).getAsJsonObject();
+        assertEquals(1, jsonArray.size());
+        assertEquals(2, user.get("id").getAsInt());
     }
 }

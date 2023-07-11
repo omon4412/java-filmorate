@@ -96,7 +96,6 @@ public class UserService {
         return userStorage.update(user);
     }
 
-
     public List<User> getUsersFriends(int userId) {
         checkUserForExists(userId);
         User user = userStorage.getUserById(userId);
@@ -107,10 +106,43 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    public List<User> getCommonFriends(int userId, int friendId) {
+        if (userId == friendId) {
+            throw new IncorrectParameterException(
+                    "Нельзя получить список общих друзей у самого себя", true);
+        }
+        checkUserForExists(userId);
+        checkUserForExists(friendId);
+
+        User user = userStorage.getUserById(userId);
+        User friend = userStorage.getUserById(friendId);
+
+        List<Integer> usersFriends = new ArrayList<>(user.getFriendIds());
+        List<Integer> friendsFriends = new ArrayList<>(friend.getFriendIds());
+
+        usersFriends.removeIf(f -> f == friendId);
+        friendsFriends.removeIf(f -> f == userId);
+
+        usersFriends.retainAll(friendsFriends);
+
+        return usersFriends.stream()
+                .mapToInt(id -> id)
+                .mapToObj(userStorage::getUserById)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Получение всех пользователей из хранилища
+     */
     private void pullFromStorage() {
         users = userStorage.getUsersMap();
     }
 
+    /**
+     * Проверка на существование пользователя
+     *
+     * @param id id Пользователя
+     */
     private void checkUserForExists(int id) {
         pullFromStorage();
         if (!users.containsKey(id)) {
