@@ -491,4 +491,106 @@ class FilmControllerTest {
         mockMvc.perform(get(filmBaseUrl + "/1"))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    public void shouldReturnPopularFilm_ifOneUserLikedOneFilm() throws Exception {
+        String jsonFilm = gson.toJson(testFilm);
+
+        mockMvc.perform(post(filmBaseUrl)
+                        .content(jsonFilm)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get(filmBaseUrl + "/1"))
+                .andExpect(status().isOk());
+
+        User user = new User("email@bb.bb", "login", LocalDate.now().minusMonths(10));
+        String jsonUser = gson.toJson(user);
+
+        mockMvc.perform(post(userBaseUrl)
+                        .content(jsonUser)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(put(filmBaseUrl + "/1/like/1"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get(filmBaseUrl + "/1"))
+                .andExpect(status().isOk());
+
+        var result = mockMvc.perform(get(filmBaseUrl + "/popular"))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+
+        JsonElement film = JsonParser.parseString(result).getAsJsonArray().get(0).getAsJsonObject();
+        assertEquals(1, gson.fromJson(film, Film.class).getUserLikeIds().size());
+        assertEquals(1, gson.fromJson(film, Film.class).getUserLikeIds().stream().findFirst().get().intValue());
+    }
+
+    @Test
+    public void shouldReturnPopularFilm_ifTwoUsersLikedOneFilm() throws Exception {
+        String jsonFilm = gson.toJson(testFilm);
+
+        mockMvc.perform(post(filmBaseUrl)
+                        .content(jsonFilm)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get(filmBaseUrl + "/1"))
+                .andExpect(status().isOk());
+
+        User user = new User("email@bb.bb", "login", LocalDate.now().minusMonths(10));
+        String jsonUser = gson.toJson(user);
+
+        mockMvc.perform(post(userBaseUrl)
+                        .content(jsonUser)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get(userBaseUrl + "/1"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(put(filmBaseUrl + "/1/like/1"))
+                .andExpect(status().isOk());
+
+        user = new User("email2@bb.bb", "login2", LocalDate.now().minusMonths(10));
+        jsonUser = gson.toJson(user);
+
+        mockMvc.perform(post(userBaseUrl)
+                        .content(jsonUser)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get(userBaseUrl + "/2"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(put(filmBaseUrl + "/1/like/2"))
+                .andExpect(status().isOk());
+
+        var result = mockMvc.perform(get(filmBaseUrl + "/popular"))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+
+        JsonElement film = JsonParser.parseString(result).getAsJsonArray().get(0).getAsJsonObject();
+        assertEquals(2, gson.fromJson(film, Film.class).getUserLikeIds().size());
+        assertEquals(1, gson.fromJson(film, Film.class).getUserLikeIds().stream().findFirst().get().intValue());
+        assertEquals(2, gson.fromJson(film, Film.class).getUserLikeIds().stream()
+                .skip(1).findFirst().get().intValue());
+
+        result = mockMvc.perform(get(filmBaseUrl + "/popular?count=1"))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+
+        film = JsonParser.parseString(result).getAsJsonArray().get(0).getAsJsonObject();
+        assertEquals(2, gson.fromJson(film, Film.class).getUserLikeIds().size());
+        assertEquals(1, gson.fromJson(film, Film.class).getUserLikeIds().stream().findFirst().get().intValue());
+        assertEquals(2, gson.fromJson(film, Film.class).getUserLikeIds().stream()
+                .skip(1).findFirst().get().intValue());
+    }
+
+    @Test
+    public void shouldNotReturnPopularFilm_ifCountIsWordOrIncorrect() throws Exception {
+        mockMvc.perform(get(filmBaseUrl + "/popular?count=www"))
+                .andExpect(status().isBadRequest());
+
+        mockMvc.perform(get(filmBaseUrl + "/popular?count=-1"))
+                .andExpect(status().isBadRequest());
+    }
 }

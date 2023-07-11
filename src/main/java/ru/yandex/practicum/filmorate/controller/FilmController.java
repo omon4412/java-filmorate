@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("/films")
@@ -71,6 +72,23 @@ public class FilmController {
     public int getFilmLikesCount(@PathVariable String filmId) {
         int filmIdInt = getFilmIdInt(filmId);
         return filmService.getFilmLikesCount(filmIdInt);
+    }
+
+    @GetMapping("/popular")
+    public List<Film> getPopularFilms(@RequestParam(required = false) String count) {
+        if (count == null) {
+            return filmService.getPopularFilms(10);
+        } else {
+            try {
+                int intCount = Integer.parseInt(count);
+                if (intCount < 0) {
+                    throw new IncorrectParameterException("count");
+                }
+                return filmService.getPopularFilms(intCount);
+            } catch (NumberFormatException e) {
+                throw new IncorrectParameterException("count");
+            }
+        }
     }
 
     private int getFilmIdInt(String filmId) {

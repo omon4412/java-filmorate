@@ -11,9 +11,8 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -73,18 +72,30 @@ public class FilmService {
         Film film = filmStorage.getFilmById(filmId);
         if (isAddLike) {
             film.getUserLikeIds().add(userId);
+            log.debug("Пользователь id={} поставил лайк фильму id={}", userId, filmId);
         } else {
             film.getUserLikeIds().remove(userId);
+            log.debug("Пользователь id={} убрал лайк фильму id={}", userId, filmId);
         }
-
-
         return filmStorage.update(film);
     }
 
     public int getFilmLikesCount(int filmId) {
         checkFilmForExists(filmId);
         Film film = filmStorage.getFilmById(filmId);
-        return film.getUserLikeIds().size();
+        int count = film.getUserLikeIds().size();
+        log.debug("Лайков у фильма id={} - {}", filmId, count);
+        return count;
+    }
+
+    public List<Film> getPopularFilms(int count) {
+        pullFromStorage();
+        List<Film> filmsList = new ArrayList<>(films.values());
+        Comparator<Film> comparator = Comparator.comparing(f->f.getUserLikeIds().size());
+        filmsList.sort(comparator.reversed());
+        log.debug("Запрошено {} фильмов", count);
+
+        return filmsList.stream().limit(count).collect(Collectors.toList());
     }
 
     private void checkUserForExists(int id) {

@@ -85,9 +85,11 @@ public class UserService {
         if (isAddFriend) {
             user.getFriendIds().add(friend.getId());
             friend.getFriendIds().add(user.getId());
+            log.debug("Пользователь id={} добавил в друзья с id={}", userId, friendId);
         } else {
             user.getFriendIds().remove(friend.getId());
             friend.getFriendIds().remove(user.getId());
+            log.debug("Пользователь id={} удалил из друзей id={}", userId, friendId);
         }
 
         userStorage.update(friend);
