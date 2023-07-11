@@ -50,9 +50,9 @@ public class UserService {
         checkUserForExists(userId);
 
         User user = userStorage.getUserById(userId);
-        Set<Integer> friendsIds = user.getFriends();
+        Set<Integer> friendsIds = user.getFriendIds();
 
-        friendsIds.stream().map(userStorage::getUserById).forEach(friend -> friend.getFriends().remove(userId));
+        friendsIds.stream().map(userStorage::getUserById).forEach(friend -> friend.getFriendIds().remove(userId));
         return userStorage.delete(user);
     }
 
@@ -71,9 +71,10 @@ public class UserService {
         return userStorage.clearAll();
     }
 
-    public User addFriendToUser(int userId, int friendId) {
+    public User updateFriendship(int userId, int friendId, boolean isAddFriend) {
         if (userId == friendId) {
-            throw new IncorrectParameterException("Нельзя добавить самого себя", true);
+            throw new IncorrectParameterException(
+                    "Нельзя " + (isAddFriend ? "добавить" : "удалить") + " самого себя", true);
         }
         checkUserForExists(userId);
         checkUserForExists(friendId);
@@ -81,38 +82,27 @@ public class UserService {
         User user = userStorage.getUserById(userId);
         User friend = userStorage.getUserById(friendId);
 
-        user.getFriends().add(friend.getId());
-        friend.getFriends().add(user.getId());
+        if (isAddFriend) {
+            user.getFriendIds().add(friend.getId());
+            friend.getFriendIds().add(user.getId());
+        } else {
+            user.getFriendIds().remove(friend.getId());
+            friend.getFriendIds().remove(user.getId());
+        }
 
         userStorage.update(friend);
         return userStorage.update(user);
     }
+
 
     public List<User> getUsersFriends(int userId) {
         checkUserForExists(userId);
         User user = userStorage.getUserById(userId);
-        Set<Integer> friendsIds = user.getFriends();
+        Set<Integer> friendsIds = user.getFriendIds();
         return friendsIds.stream()
                 .map(userStorage::getUserById)
                 .sorted(Comparator.comparing(User::getId))
                 .collect(Collectors.toList());
-    }
-
-    public User deleteFriendFromUser(int userId, int friendId) {
-        if (userId == friendId) {
-            throw new IncorrectParameterException("Нельзя удалить самого себя", true);
-        }
-        checkUserForExists(userId);
-        checkUserForExists(friendId);
-
-        User user = userStorage.getUserById(userId);
-        User friend = userStorage.getUserById(friendId);
-
-        user.getFriends().remove(friend.getId());
-        friend.getFriends().remove(user.getId());
-
-        userStorage.update(friend);
-        return userStorage.update(user);
     }
 
     private void pullFromStorage() {

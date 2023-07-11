@@ -38,5 +38,5 @@ public class User {
     @JsonSerialize(using = LocalDateSerializer.class)
     protected LocalDate birthday;
 
-    protected Set<Integer> friends = new HashSet<>();
+    protected Set<Integer> friendIds = new HashSet<>();
 }

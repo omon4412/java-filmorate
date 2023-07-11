@@ -36,16 +36,48 @@ public class FilmController {
         return filmService.addFilm(film);
     }
 
+    @DeleteMapping("/{filmId}")
+    public Film deleteFilmById(@PathVariable String filmId) {
+        int filmIdInt = getFilmIdInt(filmId);
+        return filmService.deleteFilm(filmIdInt);
+    }
+
     @GetMapping("/{filmId}")
-    public Film getFilmById(@PathVariable int filmId) {
-        if (filmId < 0) {
-            throw new IncorrectParameterException("filmId");
-        }
-        return filmService.getFilmById(filmId);
+    public Film getFilmById(@PathVariable String filmId) {
+        int filmIdInt = getFilmIdInt(filmId);
+        return filmService.getFilmById(filmIdInt);
     }
 
     @PutMapping
     public Film updateFilm(@RequestBody @Valid Film film) {
         return filmService.updateFilm(film);
+    }
+
+    @PutMapping("/{filmId}/like/{userId}")
+    public Film addLikeToFilm(@PathVariable String filmId, @PathVariable String userId) {
+        int filmIdInt = getFilmIdInt(filmId);
+        int userIdInt = getFilmIdInt(userId);
+        return filmService.updateLikeToFilm(filmIdInt, userIdInt, true);
+    }
+
+    @DeleteMapping("/{filmId}/like/{userId}")
+    public Film deleteLikeFromFilm(@PathVariable String filmId, @PathVariable String userId) {
+        int filmIdInt = getFilmIdInt(filmId);
+        int userIdInt = getFilmIdInt(userId);
+        return filmService.updateLikeToFilm(filmIdInt, userIdInt, false);
+    }
+
+    @GetMapping("/{filmId}/like")
+    public int getFilmLikesCount(@PathVariable String filmId) {
+        int filmIdInt = getFilmIdInt(filmId);
+        return filmService.getFilmLikesCount(filmIdInt);
+    }
+
+    private int getFilmIdInt(String filmId) {
+        try {
+            return Integer.parseInt(filmId);
+        } catch (NumberFormatException e) {
+            throw new IncorrectParameterException("filmId");
+        }
     }
 }

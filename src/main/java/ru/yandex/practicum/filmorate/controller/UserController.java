@@ -58,14 +58,14 @@ public class UserController {
     public User addFriendToUser(@PathVariable String userId, @PathVariable String friendId) {
         int userIdInt = getUserIdInt(userId);
         int friendIdInt = getUserIdInt(friendId);
-        return userService.addFriendToUser(userIdInt, friendIdInt);
+        return userService.updateFriendship(userIdInt, friendIdInt, true);
     }
 
     @DeleteMapping("/{userId}/friends/{friendId}")
     public User deleteFriendFromUser(@PathVariable String userId, @PathVariable String friendId) {
         int userIdInt = getUserIdInt(userId);
         int friendIdInt = getUserIdInt(friendId);
-        return userService.deleteFriendFromUser(userIdInt, friendIdInt);
+        return userService.updateFriendship(userIdInt, friendIdInt, false);
     }
 
     @GetMapping("/{userId}/friends")
@@ -81,12 +81,10 @@ public class UserController {
      * @return id пользователя в формате числа
      */
     private int getUserIdInt(String userId) {
-        int userIdInt;
         try {
-            userIdInt = Integer.parseInt(userId);
+            return Integer.parseInt(userId);
         } catch (NumberFormatException e) {
             throw new IncorrectParameterException("userId");
         }
-        return userIdInt;
     }
 }
