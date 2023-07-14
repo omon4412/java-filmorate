@@ -12,10 +12,19 @@ import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Сервис для работы с пользователями
+ */
 @Service
 @Slf4j
 public class UserService {
+    /**
+     * Хранилище пользователей
+     */
     private final UserStorage userStorage;
+    /**
+     * Мапа для хранения пользователей по их id
+     */
     private Map<Integer, User> users = new HashMap<>();
 
     @Autowired
@@ -23,10 +32,19 @@ public class UserService {
         this.userStorage = userStorage;
     }
 
+    /**
+     * Добавляет пользователя в хранилище
+     *
+     * @param user Пользователь {@link User}
+     * @return Добавленный пользователь
+     * @throws UserAlreadyExistException Если пользователь уже существует
+     */
     public User addUser(User user) {
         pullFromStorage();
-        if (users.values().stream().anyMatch(u -> u.getEmail().equals(user.getEmail()))) {
-            log.warn("Пользователь с {} уже существует", user.getEmail());
+        if (users.values().stream()
+                .anyMatch(u -> u.getEmail()
+                        .equals(user.getEmail()))) {
+            log.error("Пользователь с {} уже существует", user.getEmail());
             throw new UserAlreadyExistException(
                     "Пользователь с " + user.getEmail() + " уже существует");
         }
@@ -37,6 +55,12 @@ public class UserService {
         return userStorage.add(user);
     }
 
+    /**
+     * Обновляет пользователя в хранилище
+     *
+     * @param user Пользователь {@link User}
+     * @return Обновлённый пользователь
+     */
     public User updateUser(User user) {
         checkUserForExists(user.getId());
         if (user.getName() == null) {
@@ -45,6 +69,12 @@ public class UserService {
         return userStorage.update(user);
     }
 
+    /**
+     * Удаляет пользователя из хранилища
+     *
+     * @param userId id пользователя
+     * @return Удалённый пользователь
+     */
     public User deleteUser(int userId) {
         pullFromStorage();
         checkUserForExists(userId);
@@ -52,27 +82,56 @@ public class UserService {
         User user = userStorage.getUserById(userId);
         Set<Integer> friendsIds = user.getFriendIds();
 
-        friendsIds.stream().map(userStorage::getUserById).forEach(friend -> friend.getFriendIds().remove(userId));
+        friendsIds.stream()
+                .map(userStorage::getUserById)
+                .forEach(friend -> friend.getFriendIds()
+                        .remove(userId));
         return userStorage.delete(user);
     }
 
+    /**
+     * Возвращает пользователя по его id
+     *
+     * @param id id пользователя
+     * @return Найденный пользователь
+     */
     public User getUserById(int id) {
         checkUserForExists(id);
         return userStorage.getUserById(id);
     }
 
+    /**
+     * Возвращает список всех пользователей
+     *
+     * @return Список всех пользователей
+     */
     public Collection<User> getAllUserList() {
         List<User> sortUsers = new ArrayList<>(userStorage.getAllObjList());
         sortUsers.sort(Comparator.comparing(User::getId));
         return sortUsers;
     }
 
+    /**
+     * Удаляет все пользователей из хранилища
+     *
+     * @return Количество удалённых пользователей
+     */
     public int clearUsers() {
         return userStorage.clearAll();
     }
 
+    /**
+     * Обновляет статус друга у пользователя
+     *
+     * @param userId      id пользователя
+     * @param friendId    id друга
+     * @param isAddFriend Флаг, указывающий, добавить или удалить друга
+     * @return Обновлённый пользователь
+     * @throws IncorrectParameterException Если friendId == isAddFriend
+     */
     public User updateFriendship(int userId, int friendId, boolean isAddFriend) {
         if (userId == friendId) {
+            log.error("Нельзя " + (isAddFriend ? "добавить" : "удалить") + " самого себя");
             throw new IncorrectParameterException(
                     "Нельзя " + (isAddFriend ? "добавить" : "удалить") + " самого себя", true);
         }
@@ -96,6 +155,12 @@ public class UserService {
         return userStorage.update(user);
     }
 
+    /**
+     * Возвращает список всех друзей пользователя
+     *
+     * @param userId id пользователя
+     * @return Список друзей
+     */
     public List<User> getUsersFriends(int userId) {
         checkUserForExists(userId);
         User user = userStorage.getUserById(userId);
@@ -106,6 +171,14 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Возвращает список общих друзей у двух пользователей
+     *
+     * @param userId   Id пользователя
+     * @param friendId Id друга
+     * @return Список общих друзей
+     * @throws IncorrectParameterException Если friendId == isAddFriend
+     */
     public List<User> getCommonFriends(int userId, int friendId) {
         if (userId == friendId) {
             throw new IncorrectParameterException(
@@ -142,11 +215,12 @@ public class UserService {
      * Проверка на существование пользователя
      *
      * @param id id Пользователя
+     * @throws UserNotFoundException Если пользователь не найден
      */
-    private void checkUserForExists(int id) {
+    private void checkUserForExists(int id) throws UserNotFoundException {
         pullFromStorage();
         if (!users.containsKey(id)) {
-            log.warn("Пользователя с id={} не существует", id);
+            log.error("Пользователя с id={} не существует", id);
             throw new UserNotFoundException(
                     "Пользователя с id=" + id + " не существует");
         }

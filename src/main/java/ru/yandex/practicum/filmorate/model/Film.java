@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.model;
 
-
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
