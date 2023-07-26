@@ -1,0 +1,11 @@
+ru.yandex.practicum.filmorate
+ru.yandex.practicum.filmorate.configuration
+ru.yandex.practicum.filmorate.controller
+ru.yandex.practicum.filmorate.exception
+ru.yandex.practicum.filmorate.model
+ru.yandex.practicum.filmorate.service
+ru.yandex.practicum.filmorate.storage
+ru.yandex.practicum.filmorate.storage.film
+ru.yandex.practicum.filmorate.storage.user
+ru.yandex.practicum.filmorate.util
+ru.yandex.practicum.filmorate.validation
