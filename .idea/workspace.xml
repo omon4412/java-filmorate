@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="0d870e98-a98e-4ab8-9643-be8e3649cdf1" name="Changes" comment="docs: Документация всего кода&#10;refactor: Вынес преобразование id в отдельный класс конвертор&#10;style: Привёл фрагменты кода к правильному стилю" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="useMavenConfig" value="true" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectId" id="2RqXQhp3T1oizWBrEBXsAHdgyx7" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last.edited.regexp&quot;: &quot;&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Yande/Desktop/Serg/Java/Яндекс/final_tasks/java-filmorate&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.IDE.editor.colors&quot;,
+    &quot;spring.configuration.checksum&quot;: &quot;0ae6ea87b46fecbec34cad55c549afe5&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="ru.yandex.practicum.filmorate.model" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="ru.yandex.practicum.filmorate.controller" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="ru.yandex.practicum.filmorate.validation" />
+    </key>
+  </component>
+  <component name="RunAnythingCache">
+    <option name="myCommands">
+      <command value="mvn checkstyle:checkstyle" />
+      <command value="mvn javadoc:javadoc" />
+    </option>
+  </component>
+  <component name="RunManager" selected="JUnit.All in filmorate">
+    <configuration name="All in filmorate" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="filmorate" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="TEST_OBJECT" value="package" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="FilmControllerTest.shouldNotReturnPopularFilm_ifCountIsWordOrIncorrect" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="filmorate" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="ru.yandex.practicum.filmorate.controller.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="ru.yandex.practicum.filmorate.controller" />
+      <option name="MAIN_CLASS_NAME" value="ru.yandex.practicum.filmorate.controller.FilmControllerTest" />
+      <option name="METHOD_NAME" value="shouldNotReturnPopularFilm_ifCountIsWordOrIncorrect" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="FilmControllerTest.shouldReturnPopularFilm_ifTwoUsersLikedOneFilm" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="filmorate" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="ru.yandex.practicum.filmorate.controller.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="ru.yandex.practicum.filmorate.controller" />
+      <option name="MAIN_CLASS_NAME" value="ru.yandex.practicum.filmorate.controller.FilmControllerTest" />
+      <option name="METHOD_NAME" value="shouldReturnPopularFilm_ifTwoUsersLikedOneFilm" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UserControllerTest.shouldAddTwoFriendsToUser" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="filmorate" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="ru.yandex.practicum.filmorate.controller.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="ru.yandex.practicum.filmorate.controller" />
+      <option name="MAIN_CLASS_NAME" value="ru.yandex.practicum.filmorate.controller.UserControllerTest" />
+      <option name="METHOD_NAME" value="shouldAddTwoFriendsToUser" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UserControllerTest.shouldGetCommonFriends" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="filmorate" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="ru.yandex.practicum.filmorate.controller.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="ru.yandex.practicum.filmorate.controller" />
+      <option name="MAIN_CLASS_NAME" value="ru.yandex.practicum.filmorate.controller.UserControllerTest" />
+      <option name="METHOD_NAME" value="shouldGetCommonFriends" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="java-filmorate" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="java-filmorate" />
+      <option name="filePath" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="FilmorateApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="filmorate" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="ru.yandex.practicum.filmorate.FilmorateApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.All in filmorate" />
+        <item itemvalue="JUnit.UserControllerTest.shouldGetCommonFriends" />
+        <item itemvalue="JUnit.UserControllerTest.shouldAddTwoFriendsToUser" />
+        <item itemvalue="JUnit.FilmControllerTest.shouldNotReturnPopularFilm_ifCountIsWordOrIncorrect" />
+        <item itemvalue="JUnit.FilmControllerTest.shouldReturnPopularFilm_ifTwoUsersLikedOneFilm" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="0d870e98-a98e-4ab8-9643-be8e3649cdf1" name="Changes" comment="" />
+      <created>1687978572293</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1687978572293</updated>
+      <workItem from="1687978573352" duration="2138000" />
+      <workItem from="1688298005313" duration="5527000" />
+      <workItem from="1688717054867" duration="6911000" />
+      <workItem from="1688811149495" duration="8900000" />
+      <workItem from="1688894534441" duration="19439000" />
+      <workItem from="1688992563374" duration="10640000" />
+      <workItem from="1689063022151" duration="14902000" />
+      <workItem from="1689087436461" duration="18000" />
+      <workItem from="1689087652498" duration="27000" />
+      <workItem from="1689088417132" duration="1475000" />
+      <workItem from="1689324706777" duration="11761000" />
+      <workItem from="1689681006774" duration="49000" />
+      <workItem from="1689688530586" duration="1430000" />
+      <workItem from="1689689968933" duration="149000" />
+      <workItem from="1689690125011" duration="508000" />
+      <workItem from="1689765933137" duration="15000" />
+      <workItem from="1690371432083" duration="1470000" />
+      <workItem from="1690384394721" duration="4070000" />
+      <workItem from="1690397039553" duration="645000" />
+    </task>
+    <task id="LOCAL-00001" summary="feat: Добавил аннотации с regex паттерном для логина и почты">
+      <created>1688720345858</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1688720345858</updated>
+    </task>
+    <task id="LOCAL-00002" summary="refactor: Переделал архитектуру у хранения фильмов">
+      <created>1688832240248</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1688832240248</updated>
+    </task>
+    <task id="LOCAL-00003" summary="refactor: Переделал архитектуру для хранения пользователей&#10;feat: Добавил поиск фильмов и пользователей по id&#10;feat: Добавил обработчик ошибок&#10;docs: Добавил немного документации">
+      <created>1688929024831</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1688929024831</updated>
+    </task>
+    <task id="LOCAL-00004" summary="refactor: Переделал архитектуру для хранения пользователей&#10;feat: Добавил поиск фильмов и пользователей по id&#10;feat: Добавил обработчик ошибок&#10;docs: Добавил немного документации">
+      <created>1688929100912</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1688929100912</updated>
+    </task>
+    <task id="LOCAL-00005" summary="refactor: Переделал архитектуру для хранения пользователей&#10;feat: Добавил поиск фильмов и пользователей по id&#10;feat: Добавил обработчик ошибок&#10;docs: Добавил немного документации">
+      <created>1688929139382</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1688929139382</updated>
+    </task>
+    <task id="LOCAL-00006" summary="feat: Добавил удаление пользователя по id&#10;feat: Добавил работу с друзьями: добавление, удаление, получение списка друзей.">
+      <created>1689005286169</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1689005286169</updated>
+    </task>
+    <task id="LOCAL-00007" summary="feat: Добавил удаление фильма по id&#10;feat: Добавил работу с лайками у фильма: добавление, удаление, получение количества лайков у фильма.">
+      <created>1689067778071</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1689067778071</updated>
+    </task>
+    <task id="LOCAL-00008" summary="feat: Добавил поиск самого популярного фильма">
+      <created>1689077652981</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1689077652981</updated>
+    </task>
+    <task id="LOCAL-00009" summary="feat: Добавил поиск общих друзей у пользователей">
+      <created>1689086219981</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1689086219981</updated>
+    </task>
+    <task id="LOCAL-00010" summary="style: Исправления для Checkstyle теста">
+      <created>1689088517234</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1689088517234</updated>
+    </task>
+    <task id="LOCAL-00011" summary="style: Исправления для Checkstyle теста 2">
+      <created>1689088693368</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1689088693368</updated>
+    </task>
+    <task id="LOCAL-00012" summary="docs: Документация всего кода&#10;refactor: Вынес преобразование id в отдельный класс конвертор&#10;style: Привёл фрагменты кода к правильному стилю">
+      <created>1689340688454</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1689340688454</updated>
+    </task>
+    <task id="LOCAL-00013" summary="docs: Документация всего кода&#10;refactor: Вынес преобразование id в отдельный класс конвертор&#10;style: Привёл фрагменты кода к правильному стилю">
+      <created>1689340772669</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1689340772669</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="feat: Добавил аннотации с regex паттерном для логина и почты" />
+    <MESSAGE value="refactor: Переделал архитектуру у хранения фильмов" />
+    <MESSAGE value="refactor: Переделал архитектуру для хранения пользователей&#10;feat: Добавил поиск фильмов и пользователей по id&#10;feat: Добавил обработчик ошибок&#10;docs: Добавил немного документации" />
+    <MESSAGE value="feat: Добавил удаление пользователя по id&#10;feat: Добавил работу с друзьями: добавление, удаление, получение списка друзей." />
+    <MESSAGE value="feat: Добавил удаление фильма по id&#10;feat: Добавил работу с лайками у фильма: добавление, удаление, получение количества лайков у фильма." />
+    <MESSAGE value="feat: Добавил поиск самого популярного фильма" />
+    <MESSAGE value="feat: Добавил поиск общих друзей у пользователей" />
+    <MESSAGE value="style: Исправления для Checkstyle теста" />
+    <MESSAGE value="style: Исправления для Checkstyle теста 2" />
+    <MESSAGE value="docs: Документация всего кода&#10;refactor: Вынес преобразование id в отдельный класс конвертор&#10;style: Привёл фрагменты кода к правильному стилю" />
+    <option name="LAST_COMMIT_MESSAGE" value="docs: Документация всего кода&#10;refactor: Вынес преобразование id в отдельный класс конвертор&#10;style: Привёл фрагменты кода к правильному стилю" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/java_filmorate$UserControllerTest.ic" NAME="UserControllerTest Coverage Results" MODIFIED="1688746519364" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+      <FILTER>ru.yandex.practicum.filmorate.controller.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/java_filmorate$FilmorateApplication.ic" NAME="FilmorateApplication Coverage Results" MODIFIED="1689082157209" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/java_filmorate$FilmControllerTest_shouldGet3Films.ic" NAME="FilmControllerTest.shouldGet3Films Coverage Results" MODIFIED="1688831852781" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+      <FILTER>ru.yandex.practicum.filmorate.controller.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/java_filmorate$All_in_filmorate.ic" NAME="All in filmorate Coverage Results" MODIFIED="1689067698162" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+  </component>
+</project>
