@@ -15,28 +15,49 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Класс, представляющий модель пользователя
+ */
 @Data
 public class User {
+    /**
+     * Идентификатор пользователя
+     */
     protected int id = -1;
 
+    /**
+     * Электронная почта пользователя
+     */
     @NonNull
     @NotBlank
     @Email(regexp = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
             + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$")
     protected String email;
 
+    /**
+     * Логин пользователя
+     */
     @NonNull
     @NotBlank
     @Pattern(regexp = "^[a-zA-Z0-9_]+$")
     protected String login;
 
+    /**
+     * Имя пользователя
+     */
     protected String name;
 
+    /**
+     * День рождения пользователя
+     */
     @Past
     @NonNull
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
     protected LocalDate birthday;
 
+    /**
+     * Множество идентификаторов друзей пользователя
+     */
     protected Set<Integer> friendIds = new HashSet<>();
 }

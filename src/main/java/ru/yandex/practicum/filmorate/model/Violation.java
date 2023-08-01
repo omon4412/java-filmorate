@@ -12,6 +12,12 @@ import lombok.ToString;
 @ToString
 
 public class Violation {
+    /**
+     * Название поля
+     */
     private final String fieldName;
+    /**
+     * Текст ошибки
+     */
     private final String errorMessage;
 }
