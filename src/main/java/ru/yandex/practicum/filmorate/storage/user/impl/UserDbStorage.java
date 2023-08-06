@@ -17,6 +17,9 @@ import java.sql.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Хранилище для пользователей в бд
+ */
 @Component("userDbStorage")
 @Slf4j
 public class UserDbStorage implements UserStorage {
@@ -160,6 +163,7 @@ public class UserDbStorage implements UserStorage {
         return users.isEmpty() ? null : users.get(0);
     }
 
+    @Override
     public boolean checkForExists(int id) {
         String query = "SELECT count(*) from \"user\" WHERE \"user_id\" = ?";
         try {
@@ -176,7 +180,15 @@ public class UserDbStorage implements UserStorage {
         return true;
     }
 
-
+    /**
+     * Подготовка запроса для дальнейшего получения идентификатора
+     *
+     * @param user       Пользователь
+     * @param query      Запрос
+     * @param connection Соединение с бд
+     * @return Подготовленный запрос
+     * @throws SQLException Когда запрос был неверно составлен
+     */
     private PreparedStatement getPreparedStatement(User user,
                                                    String query,
                                                    Connection connection) throws SQLException {

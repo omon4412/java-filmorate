@@ -8,10 +8,20 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Маппинг пользователя
+ */
 public class UserMapper {
     private UserMapper() {
     }
 
+    /**
+     * Маппинг строки в объект пользователя
+     * @param resultSet Строка
+     * @param num
+     * @return Пользователь
+     * @throws SQLException Когда мапинг неудался
+     */
     public static User mapRowToUser(ResultSet resultSet, int num) throws SQLException {
         User user = new User(
                 resultSet.getString("email"),

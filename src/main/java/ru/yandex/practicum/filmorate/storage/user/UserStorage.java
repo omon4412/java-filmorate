@@ -19,7 +19,7 @@ public interface UserStorage extends DataStorage<User> {
     /**
      * Получить пользователя по id
      *
-     * @param id - Идентификатор пользователя
+     * @param id Идентификатор пользователя
      * @return Пользователь
      */
     User getUserById(int id);
@@ -27,7 +27,7 @@ public interface UserStorage extends DataStorage<User> {
     /**
      * Получить пользователя по email
      *
-     * @param email - Почта
+     * @param email Почта
      * @return Пользователь
      */
     User getUserByEmail(String email);
@@ -35,7 +35,7 @@ public interface UserStorage extends DataStorage<User> {
     /**
      * Получить пользователя по login
      *
-     * @param login - Логин
+     * @param login Логин
      * @return Пользователь
      */
     User getUserByLogin(String login);
@@ -43,7 +43,7 @@ public interface UserStorage extends DataStorage<User> {
     /**
      * Проверить пользователя на существование
      *
-     * @param id - Идентификатор пользователя
+     * @param id Идентификатор пользователя
      */
     boolean checkForExists(int id);
 }

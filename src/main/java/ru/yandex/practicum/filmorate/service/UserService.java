@@ -120,7 +120,7 @@ public class UserService {
     }
 
     /**
-     * Удаляет все пользователей из хранилища
+     * Удаляет всех пользователей из хранилища
      *
      * @return Количество удалённых пользователей
      */
@@ -206,6 +206,13 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Подтвеждает дружбу у пользователя, которому прислали предложение
+     *
+     * @param userId   Id пользователя
+     * @param friendId Id друга
+     * @return Пользователь
+     */
     public User confirmFriendship(int userId, int friendId) {
         if (userId == friendId) {
             throw new IncorrectParameterException(
