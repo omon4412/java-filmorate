@@ -71,6 +71,21 @@ public class FriendBDStorage implements FriendStorage {
     }
 
     @Override
+    public void confirmFriendship(int userId, int friendId) {
+        String query = "UPDATE \"user_friend\"" +
+                "SET \"status\" = true " +
+                "WHERE (\"user_id_1\"=? and \"user_id_2\"=?)" +
+                "or (\"user_id_2\"=? and \"user_id_1\"=?)";
+        try {
+            jdbcTemplate.update(query, userId, friendId, userId, friendId);
+            log.debug("Пользователь id=" + userId + " подтвердил дружбу с id=" + friendId);
+        } catch (DataAccessException ex) {
+            log.error(ex.getMessage());
+            throw new RuntimeException(ex.getMessage());
+        }
+    }
+
+    @Override
     public void removeAll() {
         String truncateQuery = "DELETE from \"user_friend\"";
         try {

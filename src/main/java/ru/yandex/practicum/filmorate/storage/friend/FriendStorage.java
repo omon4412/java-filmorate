@@ -9,5 +9,7 @@ public interface FriendStorage {
 
     Set<Integer> getUserFriendsIds(int userId);
 
+    void confirmFriendship(int userId, int friendId);
+
     void removeAll();
 }

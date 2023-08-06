@@ -114,7 +114,9 @@ public class UserService {
      * @return Список всех пользователей
      */
     public Collection<User> getAllUserList() {
-        return userStorage.getAllObjList();
+        Collection<User> users = userStorage.getAllObjList();
+        users.forEach(u -> u.setFriendIds(friendStorage.getUserFriendsIds(u.getId())));
+        return users;
     }
 
     /**
@@ -155,8 +157,8 @@ public class UserService {
             friendStorage.removeFriend(userId, friendId);
             log.debug("Пользователь id={} удалил из друзей id={}", userId, friendId);
         }
-
-        return userStorage.update(user);
+        user.setFriendIds(friendStorage.getUserFriendsIds(userId));
+        return user;
     }
 
     /**
@@ -181,6 +183,7 @@ public class UserService {
      * @return Список общих друзей
      * @throws IncorrectParameterException Если friendId == isAddFriend
      */
+    @Transactional
     public List<User> getCommonFriends(int userId, int friendId) {
         if (userId == friendId) {
             throw new IncorrectParameterException(
@@ -203,9 +206,19 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    //TODO Подтвеждение дружбы
     public User confirmFriendship(int userId, int friendId) {
-        return null;
+        if (userId == friendId) {
+            throw new IncorrectParameterException(
+                    "Нельзя подтвердить дружбу у самого себя", true);
+        }
+        checkUserForExists(userId);
+        checkUserForExists(friendId);
+
+        User user = userStorage.getUserById(userId);
+        friendStorage.confirmFriendship(userId, friendId);
+        user.setFriendIds(friendStorage.getUserFriendsIds(userId));
+
+        return user;
     }
 
     /**

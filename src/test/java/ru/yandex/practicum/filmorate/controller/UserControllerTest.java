@@ -436,6 +436,59 @@ class UserControllerTest {
     }
 
     @Test
+    public void shouldAddFriendToUser_AndConfirm() throws Exception {
+        String jsonUser = gson.toJson(testUser);
+
+        mockMvc.perform(post(baseUrl)
+                        .content(jsonUser)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        testUser.setEmail("some@gg.ru");
+        testUser.setLogin("login45345");
+        jsonUser = gson.toJson(testUser);
+
+        mockMvc.perform(post(baseUrl)
+                        .content(jsonUser)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get(baseUrl + "/1"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get(baseUrl + "/2"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(put(baseUrl + "/1/friends/2"))
+                .andExpect(status().isOk());
+
+        var result = mockMvc.perform(get(baseUrl + "/1/friends"))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+
+        JsonArray jsonArray = JsonParser.parseString(result).getAsJsonArray();
+        var user = jsonArray.get(0).getAsJsonObject();
+        assertEquals(1, jsonArray.size());
+        assertEquals(2, user.get("id").getAsInt());
+
+        result = mockMvc.perform(get(baseUrl + "/2/friends"))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+
+        jsonArray = JsonParser.parseString(result).getAsJsonArray();
+        assertEquals(0, jsonArray.size());
+
+        mockMvc.perform(patch(baseUrl + "/2/friends/1"))
+                .andExpect(status().isOk());
+
+        result = mockMvc.perform(get(baseUrl + "/2/friends"))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+
+        jsonArray = JsonParser.parseString(result).getAsJsonArray();
+        user = jsonArray.get(0).getAsJsonObject();
+        assertEquals(1, jsonArray.size());
+        assertEquals(1, user.get("id").getAsInt());
+    }
+
+    @Test
     public void shouldAddTwoFriendsToUser() throws Exception {
         String jsonUser = gson.toJson(testUser);
 
