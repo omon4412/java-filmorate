@@ -27,10 +27,10 @@ public interface DataStorage<T> {
     /**
      * Удаляет объект в хранилище
      *
-     * @param obj Объект
+     * @param id Идентификатор объекта
      * @return Удалённый объект
      */
-    T delete(T obj);
+    T delete(int id);
 
     /**
      * Очищает хранилище

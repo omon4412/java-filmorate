@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.FilmAlreadyExistException;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
@@ -34,7 +35,7 @@ public class FilmService {
     private Map<Integer, Film> films = new HashMap<>();
 
     @Autowired
-    public FilmService(FilmStorage filmStorage, UserStorage userStorage) {
+    public FilmService(FilmStorage filmStorage, @Qualifier("userDbStorage") UserStorage userStorage) {
         this.filmStorage = filmStorage;
         this.userStorage = userStorage;
     }
@@ -78,9 +79,9 @@ public class FilmService {
     public Film deleteFilm(int filmId) {
         checkFilmForExists(filmId);
 
-        Film film = filmStorage.getFilmById(filmId);
+        //Film film = filmStorage.getFilmById(filmId);
 
-        return filmStorage.delete(film);
+        return filmStorage.delete(filmId);
     }
 
     /**

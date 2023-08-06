@@ -196,6 +196,7 @@ class UserControllerTest {
                 .andExpect(status().isOk());
 
         testUser.setEmail("1@test.ru");
+        testUser.setLogin("login45345");
         jsonUser = gson.toJson(testUser);
         mockMvc.perform(post(baseUrl)
                         .content(jsonUser)
@@ -203,6 +204,7 @@ class UserControllerTest {
                 .andExpect(status().isOk());
 
         testUser.setEmail("2@test.ru");
+        testUser.setLogin("login898545");
         jsonUser = gson.toJson(testUser);
         mockMvc.perform(post(baseUrl)
                         .content(jsonUser)
@@ -229,7 +231,7 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        User user = new User("newMail@goog.ru", testUser.getLogin(), LocalDate.now().minusMonths(10));
+        User user = new User("newMail@go1og.ru", testUser.getLogin(), LocalDate.now().minusMonths(10));
         user.setId(1);
         jsonUser = gson.toJson(user);
 
@@ -241,7 +243,7 @@ class UserControllerTest {
         JsonElement jsonElement = JsonParser.parseString(result);
         User returnedUser = gson.fromJson(jsonElement, User.class);
         assertEquals(testUser.getLogin(), returnedUser.getLogin());
-        assertEquals("newMail@goog.ru", returnedUser.getEmail());
+        assertEquals("newMail@go1og.ru", returnedUser.getEmail());
     }
 
     @Test
@@ -285,7 +287,6 @@ class UserControllerTest {
 
         mockMvc.perform(get(baseUrl + "/give2user"))
                 .andExpect(status().isBadRequest());
-
     }
 
     @Test
@@ -368,6 +369,7 @@ class UserControllerTest {
                 .andExpect(status().isOk());
 
         testUser.setEmail("some@gg.ru");
+        testUser.setLogin("login45345");
         jsonUser = gson.toJson(testUser);
 
         mockMvc.perform(post(baseUrl)
@@ -401,6 +403,7 @@ class UserControllerTest {
                 .andExpect(status().isOk());
 
         testUser.setEmail("some@gg.ru");
+        testUser.setLogin("login45345");
         jsonUser = gson.toJson(testUser);
 
         mockMvc.perform(post(baseUrl)
@@ -429,9 +432,7 @@ class UserControllerTest {
                 .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
 
         jsonArray = JsonParser.parseString(result).getAsJsonArray();
-        var friend = jsonArray.get(0).getAsJsonObject();
-        assertEquals(1, jsonArray.size());
-        assertEquals(1, friend.get("id").getAsInt());
+        assertEquals(0, jsonArray.size());
     }
 
     @Test
@@ -447,6 +448,7 @@ class UserControllerTest {
                 .andExpect(status().isOk());
 
         testUser.setEmail("some@gg.ru");
+        testUser.setLogin("login45345");
         jsonUser = gson.toJson(testUser);
 
         mockMvc.perform(post(baseUrl)
@@ -458,6 +460,7 @@ class UserControllerTest {
                 .andExpect(status().isOk());
 
         testUser.setEmail("some3@gg.ru");
+        testUser.setLogin("login4533335");
         jsonUser = gson.toJson(testUser);
 
         mockMvc.perform(post(baseUrl)
@@ -535,6 +538,7 @@ class UserControllerTest {
                 .andExpect(status().isOk());
 
         testUser.setEmail("some@gg.ru");
+        testUser.setLogin("login45345");
         jsonUser = gson.toJson(testUser);
 
         mockMvc.perform(post(baseUrl)
@@ -560,9 +564,7 @@ class UserControllerTest {
                 .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
 
         jsonArray = JsonParser.parseString(result).getAsJsonArray();
-        var friend = jsonArray.get(0).getAsJsonObject();
-        assertEquals(1, jsonArray.size());
-        assertEquals(1, friend.get("id").getAsInt());
+        assertEquals(0, jsonArray.size());
 
         mockMvc.perform(delete(baseUrl + "/1/friends/2"))
                 .andExpect(status().isOk());
@@ -611,6 +613,7 @@ class UserControllerTest {
                 .andExpect(status().isOk());
 
         testUser.setEmail("some@gg.ru");
+        testUser.setLogin("login45345");
         jsonUser = gson.toJson(testUser);
 
         mockMvc.perform(post(baseUrl)
@@ -636,11 +639,10 @@ class UserControllerTest {
                 .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
 
         jsonArray = JsonParser.parseString(result).getAsJsonArray();
-        var friend = jsonArray.get(0).getAsJsonObject();
-        assertEquals(1, jsonArray.size());
-        assertEquals(1, friend.get("id").getAsInt());
+        assertEquals(0, jsonArray.size());
 
         testUser.setEmail("some3@gg.ru");
+        testUser.setLogin("login4534sdsfd5");
         jsonUser = gson.toJson(testUser);
 
         mockMvc.perform(post(baseUrl)

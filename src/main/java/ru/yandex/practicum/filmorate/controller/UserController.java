@@ -146,4 +146,18 @@ public class UserController {
         int friendIdInt = IdConverter.getIdInt(friendId);
         return userService.getCommonFriends(userIdInt, friendIdInt);
     }
+
+    /**
+     * Удалает друга у пользователя
+     *
+     * @param userId   Id пользователя
+     * @param friendId Id друга
+     * @return Обновлённый пользователь {@link User}
+     */
+    @PatchMapping("/{userId}/friends/{friendId}")
+    public User confirmFriendship(@PathVariable String userId, @PathVariable String friendId) {
+        int userIdInt = IdConverter.getIdInt(userId);
+        int friendIdInt = IdConverter.getIdInt(friendId);
+        return userService.confirmFriendship(userIdInt, friendIdInt);
+    }
 }

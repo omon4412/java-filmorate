@@ -58,4 +58,8 @@ public class Film {
      * Множество идентификаторов пользователей, которые оценили фильм
      */
     protected Set<Integer> userLikeIds = new HashSet<>();
+
+    protected MpaRating mpaRating;
+
+    protected Set<Genre> genres = new HashSet<>();
 }
