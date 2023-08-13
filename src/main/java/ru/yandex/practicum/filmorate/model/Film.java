@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.validation.LocalDateSerializer;
 import ru.yandex.practicum.filmorate.validation.PastOrEqual;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
@@ -59,7 +60,8 @@ public class Film {
      */
     protected Set<Integer> userLikeIds = new HashSet<>();
 
-    protected MpaRating mpaRating;
+    @NotNull
+    protected MpaRating mpa;
 
     protected Set<Genre> genres = new HashSet<>();
 }

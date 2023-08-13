@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.filmorate.exception.FilmAlreadyExistException;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
@@ -12,8 +13,9 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Сервис для работы с фильмами
@@ -29,13 +31,10 @@ public class FilmService {
      * Хранилище пользователей
      */
     private final UserStorage userStorage;
-    /**
-     * Мапа для хранения фильмов по их id
-     */
-    private Map<Integer, Film> films = new HashMap<>();
 
     @Autowired
-    public FilmService(FilmStorage filmStorage, @Qualifier("userDbStorage") UserStorage userStorage) {
+    public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage,
+                       @Qualifier("userDbStorage") UserStorage userStorage) {
         this.filmStorage = filmStorage;
         this.userStorage = userStorage;
     }
@@ -47,15 +46,8 @@ public class FilmService {
      * @return Добавленный фильм
      * @throws FilmAlreadyExistException Если фильм уже существует
      */
+    @Transactional
     public Film addFilm(Film film) {
-        pullFromStorage();
-        if (films.values()
-                .stream()
-                .anyMatch(f -> f.getName()
-                        .equals(film.getName()))) {
-            log.error("Фильм с {} уже существует", film.getName());
-            throw new FilmAlreadyExistException("Фильм с " + film.getName() + " уже существует");
-        }
         return filmStorage.add(film);
     }
 
@@ -78,9 +70,6 @@ public class FilmService {
      */
     public Film deleteFilm(int filmId) {
         checkFilmForExists(filmId);
-
-        //Film film = filmStorage.getFilmById(filmId);
-
         return filmStorage.delete(filmId);
     }
 
@@ -158,15 +147,16 @@ public class FilmService {
      * @return Список популярных фильмов
      */
     public List<Film> getPopularFilms(int count) {
-        pullFromStorage();
-        List<Film> filmsList = new ArrayList<>(films.values());
-        Comparator<Film> comparator = Comparator.comparing(f -> f.getUserLikeIds().size());
-        filmsList.sort(comparator.reversed());
-        log.debug("Запрошено {} фильмов", count);
-
-        return filmsList.stream()
-                .limit(count)
-                .collect(Collectors.toList());
+        //pullFromStorage();
+//        List<Film> filmsList = new ArrayList<>(films.values());
+//        Comparator<Film> comparator = Comparator.comparing(f -> f.getUserLikeIds().size());
+//        filmsList.sort(comparator.reversed());
+//        log.debug("Запрошено {} фильмов", count);
+//
+//        return filmsList.stream()
+//                .limit(count)
+//                .collect(Collectors.toList());
+        return null;
     }
 
     /**
@@ -185,24 +175,16 @@ public class FilmService {
     }
 
     /**
-     * Проверка на существование фильма
+     * Проверка на существование пользователя
      *
-     * @param id id Фильма
-     * @throws FilmNotFoundException Если фильм не нейден
+     * @param id id Пользователя
+     * @throws UserNotFoundException Если пользователь не найден
      */
     private void checkFilmForExists(int id) throws FilmNotFoundException {
-        pullFromStorage();
-        if (!films.containsKey(id)) {
-            log.error("Фильм с id {} не существует", id);
+        if (!filmStorage.checkForExists(id)) {
+            log.error("Фильма с id={} не существует", id);
             throw new FilmNotFoundException(
-                    "Фильма с id " + id + " не существует");
+                    "Фильма с id=" + id + " не существует");
         }
-    }
-
-    /**
-     * Получение всех фильмов из хранилища
-     */
-    private void pullFromStorage() {
-        films = filmStorage.getFilmsMap();
     }
 }

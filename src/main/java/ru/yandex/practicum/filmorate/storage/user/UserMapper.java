@@ -19,7 +19,7 @@ public class UserMapper {
      * Маппинг строки в объект пользователя
      *
      * @param resultSet Строка
-     * @param num
+     * @param num       '
      * @return Пользователь
      * @throws SQLException Когда мапинг неудался
      */

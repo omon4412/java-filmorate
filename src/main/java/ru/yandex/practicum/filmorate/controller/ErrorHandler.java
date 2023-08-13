@@ -12,6 +12,7 @@ import ru.yandex.practicum.filmorate.exception.*;
 import ru.yandex.practicum.filmorate.model.ErrorResponse;
 import ru.yandex.practicum.filmorate.model.Violation;
 import ru.yandex.practicum.filmorate.validation.LocalDateDeserializer;
+import ru.yandex.practicum.filmorate.validation.LocalDateSerializer;
 
 import javax.validation.ConstraintViolationException;
 import java.time.LocalDate;
@@ -90,7 +91,7 @@ public class ErrorHandler {
 
     /**
      * Обработчик исключения {@link IncorrectParameterException}
-     * Возникает когда внутри {@link LocalDateDeserializer} или {@link LocalDateDeserializer}
+     * Возникает когда внутри {@link LocalDateDeserializer} или {@link LocalDateSerializer}
      * возникает исключение при парсинге {@link LocalDate}
      *
      * @param e Исключение {@link HttpMessageNotReadableException}
@@ -103,6 +104,8 @@ public class ErrorHandler {
         if (localDateParseError instanceof IncorrectParameterException) {
             IncorrectParameterException error = (IncorrectParameterException) localDateParseError;
             return new ErrorResponse(error.getParameter());
+        } else if (localDateParseError instanceof NullPointerException) {
+            return new ErrorResponse("Дата не должна быть null");
         } else {
             throw new RuntimeException();
         }

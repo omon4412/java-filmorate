@@ -120,8 +120,9 @@ public class MpaRatingDbStorage implements MpaRatingStorage {
     public MpaRating getMpaRatingById(int id) {
         String query = "SELECT * FROM \"mpa_rating\" WHERE \"mpa_rating_id\" = ? LIMIT 1";
         return jdbcTemplate.queryForObject(query, (rs, num) -> {
-            MpaRating mpaRating = new MpaRating(rs.getString("name"));
-            mpaRating.setId(id);
+            MpaRating mpaRating = new MpaRating(rs.getInt("mpa_rating_id"),
+                    rs.getString("name"));
+
             log.debug("Получен рейтинг - " + mpaRating);
             return mpaRating;
         }, id);

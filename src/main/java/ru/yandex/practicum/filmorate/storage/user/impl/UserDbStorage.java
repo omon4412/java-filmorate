@@ -63,14 +63,13 @@ public class UserDbStorage implements UserStorage {
                 "\"birthday\" = ?" +
                 "WHERE \"user_id\" = ?";
         try {
-
             jdbcTemplate.update(connection -> {
                 PreparedStatement ps = getPreparedStatement(user, query, connection);
                 ps.setInt(5, user.getId());
                 return ps;
             });
 
-            log.debug("Пользователь обовлён - " + user);
+            log.debug("Пользователь обновлён - " + user);
             return user;
         } catch (DataAccessException ex) {
             log.error(ex.getMessage());

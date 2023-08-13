@@ -12,8 +12,7 @@ import ru.yandex.practicum.filmorate.storage.genre.GenreStorage;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.util.Collection;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Хранилище для жанров в бд
@@ -120,11 +119,61 @@ public class GenreDbStorage implements GenreStorage {
     public Genre getGenreById(int id) {
         String query = "SELECT * FROM \"genre\" WHERE \"genre_id\" = ? LIMIT 1";
         return jdbcTemplate.queryForObject(query, (rs, num) -> {
-            Genre genre = new Genre(rs.getString("name"));
-            genre.setId(id);
+            Genre genre = new Genre(rs.getInt("genre_id"), rs.getString("name"));
+
             log.debug("Получен жанр - " + genre);
             return genre;
         }, id);
+    }
+
+    @Override
+    public void addGenreToFilm(int filmId, int genreId) {
+        String query = "INSERT INTO \"film_genre\" (\"film_id\", \"genre_id\") " +
+                "VALUES(?, ?)";
+        try {
+            jdbcTemplate.update(query, filmId, genreId);
+            log.debug("К фильму id=" + filmId + " добавлен жанр id=" + genreId);
+        } catch (DataAccessException ex) {
+            log.error(ex.getMessage());
+            throw new RuntimeException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public void removeGenreFromFilm(int filmId, int genreId) {
+        String query = "DELETE FROM \"film_genre\" " +
+                "WHERE (\"film_id\"=? and \"genre_id\"=?)";
+        try {
+            jdbcTemplate.update(query, filmId, genreId);
+            log.debug("Фильму id=" + filmId + " убрали жанр id=" + genreId);
+        } catch (DataAccessException ex) {
+            log.error(ex.getMessage());
+            throw new RuntimeException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public Set<Genre> getFilmGenres(int filmId) {
+        String query = "SELECT g.\"genre_id\", g.\"name\" from \"film_genre\" f_g\n" +
+                "join \"genre\" g on f_g.\"genre_id\" = g.\"genre_id\"\n" +
+                "WHERE f_g.\"film_id\" = ?;";
+
+        try {
+            List<Genre> genres = jdbcTemplate.query(query,
+                    (rs, rowNum) -> new Genre(rs.getInt("genre_id"),
+                            rs.getString("name")),
+                    filmId);
+            log.debug("Количество жанров - " + genres.size());
+            return new HashSet<>(genres);
+        } catch (DataAccessException ex) {
+            log.error(ex.getMessage());
+            throw new RuntimeException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public void removeAll() {
+
     }
 
     @Override

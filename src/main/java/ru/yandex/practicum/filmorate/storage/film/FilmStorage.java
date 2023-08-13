@@ -22,4 +22,11 @@ public interface FilmStorage extends DataStorage<Film> {
      * @return Фильм
      */
     Film getFilmById(int id);
+
+    /**
+     * Проверить фидьм на существование
+     *
+     * @param id Идентификатор фильма
+     */
+    boolean checkForExists(int id);
 }
