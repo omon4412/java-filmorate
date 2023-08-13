@@ -124,6 +124,36 @@ public class ErrorHandler {
     }
 
     /**
+     * Обработчик исключения {@link GenreNotFoundException}
+     * Возникает когда искомый жанр не найден
+     *
+     * @param e Исключение {@link GenreNotFoundException}
+     * @return Объект {@link ErrorResponse} c информацией об ошибке
+     */
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleGenreNotFoundException(final GenreNotFoundException e) {
+        return new ErrorResponse(
+                e.getMessage()
+        );
+    }
+
+    /**
+     * Обработчик исключения {@link MpaRatingNotFoundException}
+     * Возникает когда искомый рейтинг не найден
+     *
+     * @param e Исключение {@link MpaRatingNotFoundException}
+     * @return Объект {@link ErrorResponse} c информацией об ошибке
+     */
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleGenreNotFoundException(final MpaRatingNotFoundException e) {
+        return new ErrorResponse(
+                e.getMessage()
+        );
+    }
+
+    /**
      * Обработчик исключения {@link ConstraintViolationException}
      * Возникает когда действие нарушает ограничение на структуру модели
      *

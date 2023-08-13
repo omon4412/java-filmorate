@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.storage.genre.impl;
+package ru.yandex.practicum.filmorate.storage.mpa.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,8 +7,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.storage.genre.GenreStorage;
+import ru.yandex.practicum.filmorate.model.MpaRating;
+import ru.yandex.practicum.filmorate.storage.mpa.MpaRatingStorage;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -16,22 +16,22 @@ import java.util.Collection;
 import java.util.Objects;
 
 /**
- * Хранилище для жанров в бд
+ * Хранилище для рейтингов в бд
  */
 @Component
 @Slf4j
-public class GenreDbStorage implements GenreStorage {
+public class MpaRatingDbStorage implements MpaRatingStorage {
 
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public GenreDbStorage(JdbcTemplate jdbcTemplate) {
+    public MpaRatingDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
-    public Genre add(Genre genre) {
-        final String query = "INSERT INTO \"genre\" (\"name\") " +
+    public MpaRating add(MpaRating mpaRating) {
+        final String query = "INSERT INTO \"mpa_rating\" (\"name\") " +
                 "VALUES(?)";
         try {
             KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -39,18 +39,18 @@ public class GenreDbStorage implements GenreStorage {
             jdbcTemplate.update(connection -> {
                 PreparedStatement ps = connection.prepareStatement(query,
                         Statement.RETURN_GENERATED_KEYS);
-                ps.setString(1, genre.getName());
+                ps.setString(1, mpaRating.getName());
                 return ps;
             }, keyHolder);
 
             try {
                 int generatedKey = Objects.requireNonNull(keyHolder.getKey()).intValue();
-                genre.setId(generatedKey);
+                mpaRating.setId(generatedKey);
             } catch (NullPointerException ex) {
                 log.error(ex.getMessage());
             }
-            log.debug("Жанр добавлен - " + genre);
-            return genre;
+            log.debug("Рейтинг добавлен - " + mpaRating);
+            return mpaRating;
         } catch (DataAccessException ex) {
             log.error(ex.getMessage());
             throw new RuntimeException(ex.getMessage());
@@ -58,13 +58,13 @@ public class GenreDbStorage implements GenreStorage {
     }
 
     @Override
-    public Genre update(Genre genre) {
-        String query = "UPDATE \"genre\" SET \"name\" = ?" +
-                "WHERE \"genre_id\" = ?";
+    public MpaRating update(MpaRating mpaRating) {
+        String query = "UPDATE \"mpa_rating\" SET \"name\" = ?" +
+                "WHERE \"mpa_rating_id\" = ?";
         try {
-            jdbcTemplate.update(query, genre.getId());
-            log.debug("Жанр обновлён - " + genre);
-            return genre;
+            jdbcTemplate.update(query, mpaRating.getId());
+            log.debug("Рейтинг обновлён - " + mpaRating);
+            return mpaRating;
         } catch (DataAccessException ex) {
             log.error(ex.getMessage());
             throw new RuntimeException(ex.getMessage());
@@ -72,13 +72,13 @@ public class GenreDbStorage implements GenreStorage {
     }
 
     @Override
-    public Genre delete(int id) {
-        String query = "DELETE from \"genre\" WHERE \"genre_id\" = ?";
+    public MpaRating delete(int id) {
+        String query = "DELETE from \"mpa_rating\" WHERE \"mpa_rating_id\" = ?";
         try {
-            Genre genre = getGenreById(id);
+            MpaRating mpaRating = getMpaRatingById(id);
             jdbcTemplate.update(query, id);
-            log.debug("Жанр удалён - " + genre);
-            return genre;
+            log.debug("Рейтинг удалён - " + mpaRating);
+            return mpaRating;
         } catch (DataAccessException ex) {
             log.error(ex.getMessage());
             throw new RuntimeException(ex.getMessage());
@@ -87,12 +87,12 @@ public class GenreDbStorage implements GenreStorage {
 
     @Override
     public int clearAll() {
-        String query = "DELETE from \"genre\"";
-        String restartIdQuery = "ALTER TABLE \"genre\" ALTER COLUMN \"genre_id\" RESTART WITH 1;";
+        String query = "DELETE from \"mpa_rating\"";
+        String restartIdQuery = "ALTER TABLE \"mpa_rating\" ALTER COLUMN \"mpa_rating_id\" RESTART WITH 1;";
         try {
             jdbcTemplate.execute(restartIdQuery);
             int sqlResult = jdbcTemplate.update(query);
-            log.debug("Все жанры удалены");
+            log.debug("Все рейтингы удалены");
             return sqlResult;
         } catch (DataAccessException ex) {
             log.error(ex.getMessage());
@@ -101,15 +101,15 @@ public class GenreDbStorage implements GenreStorage {
     }
 
     @Override
-    public Collection<Genre> getAllObjList() {
-        String query = "SELECT * FROM \"genre\"";
+    public Collection<MpaRating> getAllObjList() {
+        String query = "SELECT * FROM \"mpa_rating\"";
 
         try {
-            Collection<Genre> genres = jdbcTemplate.query(query,
-                    (rs, num) -> new Genre(rs.getInt("genre_id"),
+            Collection<MpaRating> mpaRatings = jdbcTemplate.query(query,
+                    (rs, num) -> new MpaRating(rs.getInt("mpa_rating_id"),
                             rs.getString("name")));
-            log.debug("Количество жанров - " + genres.size());
-            return genres;
+            log.debug("Количество рейтингов - " + mpaRatings.size());
+            return mpaRatings;
         } catch (DataAccessException ex) {
             log.error(ex.getMessage());
             throw new RuntimeException(ex.getMessage());
@@ -117,30 +117,30 @@ public class GenreDbStorage implements GenreStorage {
     }
 
     @Override
-    public Genre getGenreById(int id) {
-        String query = "SELECT * FROM \"genre\" WHERE \"genre_id\" = ? LIMIT 1";
+    public MpaRating getMpaRatingById(int id) {
+        String query = "SELECT * FROM \"mpa_rating\" WHERE \"mpa_rating_id\" = ? LIMIT 1";
         return jdbcTemplate.queryForObject(query, (rs, num) -> {
-            Genre genre = new Genre(rs.getString("name"));
-            genre.setId(id);
-            log.debug("Получен жанр - " + genre);
-            return genre;
+            MpaRating mpaRating = new MpaRating(rs.getString("name"));
+            mpaRating.setId(id);
+            log.debug("Получен рейтинг - " + mpaRating);
+            return mpaRating;
         }, id);
     }
 
     @Override
     public boolean checkForExists(int id) {
-        String query = "SELECT count(*) from \"genre\" WHERE \"genre_id\" = ?";
+        String query = "SELECT count(*) from \"mpa_rating\" WHERE \"mpa_rating_id\" = ?";
         try {
             Integer count = jdbcTemplate.queryForObject(query, Integer.class, id);
             if (count == null || count == 0) {
-                log.error("Жанр с id {} не существует", id);
+                log.error("Рейтинг с id {} не существует", id);
                 return false;
             }
         } catch (RuntimeException ex) {
             log.error(ex.getMessage());
             return false;
         }
-        log.debug("Жанр с id={} существует", id);
+        log.debug("Рейтинг с id={} существует", id);
         return true;
     }
 }

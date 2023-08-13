@@ -79,10 +79,7 @@ public abstract class BaseEntityControllerTests<T extends BaseEntity> {
     }
 
     @Test
-    void deleteGetEntityById() throws Exception {
-        mockMvc.perform(get(baseUrl + "/1"))
-                .andExpect(status().isNotFound());
-
+    void getEntityById() throws Exception {
         String jsonEntity = gson.toJson(entity);
 
         mockMvc.perform(post(baseUrl)

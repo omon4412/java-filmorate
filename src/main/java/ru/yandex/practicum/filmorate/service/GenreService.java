@@ -3,12 +3,15 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
+import ru.yandex.practicum.filmorate.exception.GenreNotFoundException;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.genre.GenreStorage;
 
 import java.util.Collection;
 
+/**
+ * Сервис для работы с жанрами
+ */
 @Service
 @Slf4j
 public class GenreService implements BaseEntityService<Genre> {
@@ -59,7 +62,7 @@ public class GenreService implements BaseEntityService<Genre> {
     private void checkUserForExists(int genreId) {
         if (!genreStorage.checkForExists(genreId)) {
             log.error("Жанр с id={} не существует", genreId);
-            throw new UserNotFoundException(
+            throw new GenreNotFoundException(
                     "Жанр с id=" + genreId + " не существует");
         }
     }
