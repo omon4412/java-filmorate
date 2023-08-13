@@ -1,15 +1,11 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.Data;
-import lombok.NonNull;
+public class Genre extends BaseEntity {
+    public Genre(int id, String name) {
+        super(id, name);
+    }
 
-import javax.validation.constraints.NotBlank;
-
-@Data
-public class Genre {
-    protected int id;
-
-    @NonNull
-    @NotBlank
-    protected String name;
+    public Genre(String name) {
+        super(name);
+    }
 }

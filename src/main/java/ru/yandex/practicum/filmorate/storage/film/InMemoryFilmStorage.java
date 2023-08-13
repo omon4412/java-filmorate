@@ -51,6 +51,11 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
+    public boolean checkForExists(int id) {
+        return false;
+    }
+
+    @Override
     public Map<Integer, Film> getFilmsMap() {
         return films;
     }
@@ -70,5 +75,4 @@ public class InMemoryFilmStorage implements FilmStorage {
         log.debug("Фильмы очищены - " + count);
         return count;
     }
-
 }

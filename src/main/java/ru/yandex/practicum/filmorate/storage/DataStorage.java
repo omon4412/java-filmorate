@@ -45,4 +45,6 @@ public interface DataStorage<T> {
      * @return Список объектов
      */
     Collection<T> getAllObjList();
+
+    boolean checkForExists(int id);
 }

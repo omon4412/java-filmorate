@@ -1,15 +1,12 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.Data;
-import lombok.NonNull;
+public class MpaRating extends BaseEntity {
 
-import javax.validation.constraints.NotBlank;
+    public MpaRating(int id, String name) {
+        super(id, name);
+    }
 
-@Data
-public class MpaRating {
-    protected int id;
-
-    @NonNull
-    @NotBlank
-    protected String name;
+    public MpaRating(String name) {
+        super(name);
+    }
 }

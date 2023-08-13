@@ -49,14 +49,13 @@ public class UserController {
     /**
      * Создаёт пользователя
      *
-     * @param user Пользователя {@link User} для создания
+     * @param user Пользователь {@link User} для создания
      * @return Созданный пользователь {@link User}
      */
     @PostMapping
     public User createUser(@Valid @RequestBody User user) {
         return userService.addUser(user);
     }
-
 
     /**
      * Взвращает пользователя по id

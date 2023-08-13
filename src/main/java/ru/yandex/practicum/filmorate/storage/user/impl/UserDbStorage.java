@@ -63,21 +63,14 @@ public class UserDbStorage implements UserStorage {
                 "\"birthday\" = ?" +
                 "WHERE \"user_id\" = ?";
         try {
-            KeyHolder keyHolder = new GeneratedKeyHolder();
 
             jdbcTemplate.update(connection -> {
                 PreparedStatement ps = getPreparedStatement(user, query, connection);
                 ps.setInt(5, user.getId());
                 return ps;
-            }, keyHolder);
+            });
 
-            try {
-                int generatedKey = Objects.requireNonNull(keyHolder.getKey()).intValue();
-                user.setId(generatedKey);
-            } catch (NullPointerException ex) {
-                log.error(ex.getMessage());
-            }
-            log.debug("Пользователь добавлен - " + user);
+            log.debug("Пользователь обовлён - " + user);
             return user;
         } catch (DataAccessException ex) {
             log.error(ex.getMessage());

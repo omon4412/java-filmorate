@@ -17,6 +17,7 @@ public class UserMapper {
 
     /**
      * Маппинг строки в объект пользователя
+     *
      * @param resultSet Строка
      * @param num
      * @return Пользователь

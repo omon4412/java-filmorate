@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import ru.yandex.practicum.filmorate.validation.LocalDateDeserializer;
 import ru.yandex.practicum.filmorate.validation.LocalDateSerializer;
 
@@ -19,6 +20,7 @@ import java.util.Set;
  * Класс, представляющий модель пользователя
  */
 @Data
+@RequiredArgsConstructor
 public class User {
     /**
      * Идентификатор пользователя
@@ -60,4 +62,13 @@ public class User {
      * Множество идентификаторов друзей пользователя
      */
     protected Set<Integer> friendIds = new HashSet<>();
+
+    public User(User other) {
+        this.id = other.id;
+        this.email = other.email;
+        this.login = other.login;
+        this.name = other.name;
+        this.birthday = other.birthday;
+        this.friendIds = new HashSet<>(other.friendIds);
+    }
 }
