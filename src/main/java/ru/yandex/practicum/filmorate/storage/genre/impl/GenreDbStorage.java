@@ -173,7 +173,13 @@ public class GenreDbStorage implements GenreStorage {
 
     @Override
     public void removeAll() {
-
+        String truncateQuery = "DELETE from \"film_genre\"";
+        try {
+            jdbcTemplate.update(truncateQuery);
+        } catch (DataAccessException ex) {
+            log.error(ex.getMessage());
+            throw new RuntimeException(ex.getMessage());
+        }
     }
 
     @Override

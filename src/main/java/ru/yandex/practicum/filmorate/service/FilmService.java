@@ -11,11 +11,11 @@ import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.like.LikeStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Сервис для работы с фильмами
@@ -31,12 +31,18 @@ public class FilmService {
      * Хранилище пользователей
      */
     private final UserStorage userStorage;
+    /**
+     * Хранилище лайков
+     */
+    private final LikeStorage likeStorage;
 
     @Autowired
     public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage,
-                       @Qualifier("userDbStorage") UserStorage userStorage) {
+                       @Qualifier("userDbStorage") UserStorage userStorage,
+                       LikeStorage likeStorage) {
         this.filmStorage = filmStorage;
         this.userStorage = userStorage;
+        this.likeStorage = likeStorage;
     }
 
     /**
@@ -116,11 +122,11 @@ public class FilmService {
 
         Film film = filmStorage.getFilmById(filmId);
         if (isAddLike) {
-            film.getUserLikeIds().add(userId);
+            likeStorage.addLikeToFilm(filmId, userId);
             log.debug("Пользователь id={} поставил лайк фильму id={}", userId, filmId);
         } else {
-            film.getUserLikeIds().remove(userId);
-            log.debug("Пользователь id={} убрал лайк фильму id={}", userId, filmId);
+            likeStorage.removeLikeFromFilm(filmId, userId);
+            log.debug("Пользователь id={} убрал лайк у фильма id={}", userId, filmId);
         }
         return filmStorage.update(film);
     }
@@ -133,8 +139,7 @@ public class FilmService {
      */
     public int getFilmLikesCount(int filmId) {
         checkFilmForExists(filmId);
-        Film film = filmStorage.getFilmById(filmId);
-        int count = film.getUserLikeIds().size();
+        int count = likeStorage.getUsersLikesIds(filmId).size();
         log.debug("Лайков у фильма id={} - {}", filmId, count);
         return count;
     }
@@ -147,16 +152,14 @@ public class FilmService {
      * @return Список популярных фильмов
      */
     public List<Film> getPopularFilms(int count) {
-        //pullFromStorage();
-//        List<Film> filmsList = new ArrayList<>(films.values());
-//        Comparator<Film> comparator = Comparator.comparing(f -> f.getUserLikeIds().size());
-//        filmsList.sort(comparator.reversed());
-//        log.debug("Запрошено {} фильмов", count);
-//
-//        return filmsList.stream()
-//                .limit(count)
-//                .collect(Collectors.toList());
-        return null;
+        List<Film> filmsList = new ArrayList<>(filmStorage.getAllObjList());
+        Comparator<Film> comparator = Comparator.comparing(f -> f.getUserLikeIds().size());
+        filmsList.sort(comparator.reversed());
+        log.debug("Запрошено {} фильмов", count);
+
+        return filmsList.stream()
+                .limit(count)
+                .collect(Collectors.toList());
     }
 
     /**

@@ -18,8 +18,8 @@ public class MpaRatingService implements BaseEntityService<MpaRating> {
     private final MpaRatingStorage mpaRatingStorage;
 
     @Autowired
-    public MpaRatingService(MpaRatingStorage MpaRatingStorage) {
-        this.mpaRatingStorage = MpaRatingStorage;
+    public MpaRatingService(MpaRatingStorage mpaRatingStorage) {
+        this.mpaRatingStorage = mpaRatingStorage;
     }
 
     @Override

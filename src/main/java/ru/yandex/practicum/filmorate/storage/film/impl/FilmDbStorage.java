@@ -14,6 +14,7 @@ import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.MpaRating;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.genre.GenreStorage;
+import ru.yandex.practicum.filmorate.storage.like.LikeStorage;
 import ru.yandex.practicum.filmorate.storage.mpa.impl.MpaRatingDbStorage;
 import ru.yandex.practicum.filmorate.util.Constants;
 
@@ -36,13 +37,17 @@ public class FilmDbStorage implements FilmStorage {
 
     private final GenreStorage genreStorage;
 
+    private final LikeStorage likeStorage;
+
     @Autowired
     public FilmDbStorage(JdbcTemplate jdbcTemplate,
                          MpaRatingDbStorage mpaRatingDbStorage,
-                         GenreStorage genreStorage) {
+                         GenreStorage genreStorage,
+                         LikeStorage likeStorage) {
         this.jdbcTemplate = jdbcTemplate;
         this.mpaRatingDbStorage = mpaRatingDbStorage;
         this.genreStorage = genreStorage;
+        this.likeStorage = likeStorage;
     }
 
     @Override
@@ -105,6 +110,8 @@ public class FilmDbStorage implements FilmStorage {
             MpaRating rating = mpaRatingDbStorage.getMpaRatingById(film.getMpa().getId());
             film.setMpa(rating);
 
+            Set<Integer> userIds = new HashSet<>(likeStorage.getUsersLikesIds(film.getId()));
+            film.setUserLikeIds(userIds);
 
             jdbcTemplate.update(connection -> {
                 PreparedStatement ps = getPreparedStatement(film, query, connection);
@@ -246,6 +253,10 @@ public class FilmDbStorage implements FilmStorage {
         List<Genre> sortedList = new ArrayList<>(genreStorage.getFilmGenres(film.getId()));
         sortedList.sort(Comparator.comparing(Genre::getId));
         film.setGenres(new HashSet<>(sortedList));
+
+        Set<Integer> userIds = new HashSet<>(likeStorage.getUsersLikesIds(film.getId()));
+        film.setUserLikeIds(userIds);
+
         return film;
     }
 }

@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * Абстрактный класс, представляющий базовую сущность с идентификатором и именем
  */
@@ -19,6 +21,7 @@ public abstract class BaseEntity {
     /**
      * Имя сущности.
      */
+    @NotNull
     protected String name;
 }
 

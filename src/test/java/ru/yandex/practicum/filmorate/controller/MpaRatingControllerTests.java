@@ -11,7 +11,7 @@ public class MpaRatingControllerTests extends BaseEntityControllerTests<MpaRatin
 
     @BeforeEach
     public void setEntity() {
-        MpaRating testRating = new MpaRating("Test");
+        MpaRating testRating = new MpaRating(-1, "Test");
         super.setEntity(testRating);
     }
 

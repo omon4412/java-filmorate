@@ -11,7 +11,7 @@ public class GenreControllerTests extends BaseEntityControllerTests<Genre> {
 
     @BeforeEach
     public void setEntity() {
-        Genre testGenre = new Genre("Test");
+        Genre testGenre = new Genre(-1, "Test");
         super.setEntity(testGenre);
     }
 

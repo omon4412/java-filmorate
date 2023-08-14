@@ -20,7 +20,7 @@ public interface GenreStorage extends DataStorage<Genre> {
     /**
      * Удалить жанр у фильма
      *
-     * @param filmId   id фильма
+     * @param filmId  id фильма
      * @param genreId id жанра
      */
     void removeGenreFromFilm(int filmId, int genreId);
