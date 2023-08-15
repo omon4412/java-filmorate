@@ -12,11 +12,14 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Реализация хранения друзей в БД
+ * Реализация хранения друзей в БД.
  */
 @Component
 @Slf4j
 public class LikeDbStorage implements LikeStorage {
+    /**
+     * JdbcTemplate для взаимодействия с базой данных.
+     */
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired

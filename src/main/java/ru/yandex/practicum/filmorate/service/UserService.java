@@ -19,16 +19,18 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Сервис для работы с пользователями
+ * Сервис для работы с пользователями.
  */
 @Service
 @Slf4j
 public class UserService {
     /**
-     * Хранилище пользователей
+     * Хранилище пользователей.
      */
     private final UserStorage userStorage;
-
+    /**
+     * Хранилище друзей.
+     */
     private final FriendStorage friendStorage;
 
     @Autowired
@@ -39,7 +41,7 @@ public class UserService {
     }
 
     /**
-     * Добавляет пользователя в хранилище
+     * Добавляет пользователя в хранилище.
      *
      * @param user Пользователь {@link User}
      * @return Добавленный пользователь
@@ -65,7 +67,7 @@ public class UserService {
     }
 
     /**
-     * Обновляет пользователя в хранилище
+     * Обновляет пользователя в хранилище.
      *
      * @param user Пользователь {@link User}
      * @return Обновлённый пользователь
@@ -80,7 +82,7 @@ public class UserService {
     }
 
     /**
-     * Удаляет пользователя из хранилища
+     * Удаляет пользователя из хранилища.
      *
      * @param userId id пользователя
      * @return Удалённый пользователь
@@ -95,7 +97,7 @@ public class UserService {
     }
 
     /**
-     * Возвращает пользователя по его id
+     * Возвращает пользователя по его id.
      *
      * @param id id пользователя
      * @return Найденный пользователь
@@ -109,7 +111,7 @@ public class UserService {
     }
 
     /**
-     * Возвращает список всех пользователей
+     * Возвращает список всех пользователей.
      *
      * @return Список всех пользователей
      */
@@ -120,7 +122,7 @@ public class UserService {
     }
 
     /**
-     * Удаляет всех пользователей из хранилища
+     * Удаляет всех пользователей из хранилища.
      *
      * @return Количество удалённых пользователей
      */
@@ -130,7 +132,7 @@ public class UserService {
     }
 
     /**
-     * Обновляет статус друга у пользователя
+     * Обновляет статус друга у пользователя.
      *
      * @param userId      id пользователя
      * @param friendId    id друга
@@ -162,7 +164,7 @@ public class UserService {
     }
 
     /**
-     * Возвращает список всех друзей пользователя
+     * Возвращает список всех друзей пользователя.
      *
      * @param userId id пользователя
      * @return Список друзей
@@ -176,7 +178,7 @@ public class UserService {
     }
 
     /**
-     * Возвращает список общих друзей у двух пользователей
+     * Возвращает список общих друзей у двух пользователей.
      *
      * @param userId   Id пользователя
      * @param friendId Id друга
@@ -207,11 +209,12 @@ public class UserService {
     }
 
     /**
-     * Подтвеждает дружбу у пользователя, которому прислали предложение
+     * Подтвеждает дружбу у пользователя, которому прислали предложение.
      *
      * @param userId   Id пользователя
      * @param friendId Id друга
      * @return Пользователь
+     * @throws IncorrectParameterException Когда совершается попытка подтвердить дружбу у самого себя
      */
     public User confirmFriendship(int userId, int friendId) {
         if (userId == friendId) {
@@ -229,7 +232,7 @@ public class UserService {
     }
 
     /**
-     * Проверка на существование пользователя
+     * Проверка на существование пользователя.
      *
      * @param id id Пользователя
      * @throws UserNotFoundException Если пользователь не найден

@@ -12,11 +12,17 @@ import ru.yandex.practicum.filmorate.validation.LocalDateSerializer;
 import java.time.LocalDate;
 
 /**
- * Конфигурация для Jackson
+ * Конфигурация для Jackson.
  * Нужно для использования свого сериализатора и дессериализатора
  */
 @Configuration
 public class JacksonConfiguration {
+    /**
+     * ObjectMapper provides functionality for
+     * reading and writing JSON, either to and from basic POJOs (Plain Old Java Objects).
+     *
+     * @return ObjectMapper
+     */
     @Bean
     public ObjectMapper objectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();

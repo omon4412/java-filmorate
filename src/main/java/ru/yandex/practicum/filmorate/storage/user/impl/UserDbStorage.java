@@ -18,11 +18,14 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Хранилище для пользователей в бд
+ * Хранилище для пользователей в бд.
  */
 @Component("userDbStorage")
 @Slf4j
 public class UserDbStorage implements UserStorage {
+    /**
+     * JdbcTemplate для взаимодействия с базой данных.
+     */
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
@@ -173,7 +176,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     /**
-     * Подготовка запроса для дальнейшего получения идентификатора
+     * Подготовка запроса для дальнейшего получения идентификатора.
      *
      * @param user       Пользователь
      * @param query      Запрос

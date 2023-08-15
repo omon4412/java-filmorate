@@ -13,13 +13,16 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Контроллер для работы с фильмами
+ * Контроллер для работы с фильмами.
  * Обрабатывает HTTP-запросы, связанные с фильмами.
  */
 @RestController
 @RequestMapping("/films")
 @Slf4j
 public class FilmController {
+    /**
+     * Сервис для управления фильмами.
+     */
     private final FilmService filmService;
 
     @Autowired
@@ -28,7 +31,7 @@ public class FilmController {
     }
 
     /**
-     * Возвращает список всех фильмов
+     * Возвращает список всех фильмов.
      *
      * @return Список всех фильмов
      */
@@ -38,7 +41,7 @@ public class FilmController {
     }
 
     /**
-     * Удаляет все фильмы
+     * Удаляет все фильмы.
      *
      * @return Количество удалённых фильмов
      */
@@ -48,7 +51,7 @@ public class FilmController {
     }
 
     /**
-     * Создаёт фильм
+     * Создаёт фильм.
      *
      * @param film Фильм {@link Film} для создания
      * @return Созданный фильм {@link Film}
@@ -59,7 +62,7 @@ public class FilmController {
     }
 
     /**
-     * Удаляет фильм по id
+     * Удаляет фильм по id.
      *
      * @param filmId Id фильма
      * @return Удалённый фильм {@link Film}
@@ -71,7 +74,7 @@ public class FilmController {
     }
 
     /**
-     * Взвращает фильм по id
+     * Взвращает фильм по id.
      *
      * @param filmId Id фильма
      * @return Фильм {@link Film}
@@ -83,7 +86,7 @@ public class FilmController {
     }
 
     /**
-     * Обновляет фильм по id
+     * Обновляет фильм по id.
      *
      * @param film Фильм {@link Film} для обновления
      * @return Обновлённый фильм {@link Film}
@@ -94,7 +97,7 @@ public class FilmController {
     }
 
     /**
-     * Ставит лайк фильму
+     * Ставит лайк фильму.
      *
      * @param filmId Id фильма
      * @param userId Id пользователя
@@ -108,7 +111,7 @@ public class FilmController {
     }
 
     /**
-     * Убирает лайк у фильма
+     * Убирает лайк у фильма.
      *
      * @param filmId Id фильма
      * @param userId Id пользователя
@@ -122,7 +125,7 @@ public class FilmController {
     }
 
     /**
-     * Возвращает количество лайков у фильма
+     * Возвращает количество лайков у фильма.
      *
      * @param filmId Id фильма
      * @return Количество лайков
@@ -135,10 +138,11 @@ public class FilmController {
 
     /**
      * Возвращает список популярных фильмов
-     * в порядке убывания лайков
+     * в порядке убывания лайков.
      *
      * @param count Количество фильмов в списке
      * @return Список популярных фильмов
+     * @throws IncorrectParameterException Когда параметр неверного формата
      */
     @GetMapping("/popular")
     public List<Film> getPopularFilms(@RequestParam(required = false) String count) {

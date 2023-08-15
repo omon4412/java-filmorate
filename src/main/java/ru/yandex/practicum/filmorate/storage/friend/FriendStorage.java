@@ -5,11 +5,11 @@ import ru.yandex.practicum.filmorate.util.DebugOnly;
 import java.util.Set;
 
 /**
- * Интерфейс для управдения друзьями
+ * Интерфейс для управдения друзьями.
  */
 public interface FriendStorage {
     /**
-     * Добавить пользователя в друзья
+     * Добавить пользователя в друзья.
      *
      * @param userId   id пользователя
      * @param friendId id друга
@@ -17,7 +17,7 @@ public interface FriendStorage {
     void addFriend(int userId, int friendId);
 
     /**
-     * Удалить пользователя из друзей
+     * Удалить пользователя из друзей.
      *
      * @param userId   id пользователя
      * @param friendId id друга
@@ -25,7 +25,7 @@ public interface FriendStorage {
     void removeFriend(int userId, int friendId);
 
     /**
-     * Получить список идентификаторов друзей
+     * Получить список идентификаторов друзей.
      *
      * @param userId id пользователя
      * @return Список идентификаторов друзей
@@ -33,7 +33,7 @@ public interface FriendStorage {
     Set<Integer> getUserFriendsIds(int userId);
 
     /**
-     * Подвердить дружбу
+     * Подвердить дружбу.
      *
      * @param userId   id пользователя
      * @param friendId id друга
@@ -41,7 +41,7 @@ public interface FriendStorage {
     void confirmFriendship(int userId, int friendId);
 
     /**
-     * ТОЛЬКО ДЛЯ ОТЛАДКИ
+     * ТОЛЬКО ДЛЯ ОТЛАДКИ.
      * Удалить все связи между друзьями
      */
     @DebugOnly("Только для отладки!")

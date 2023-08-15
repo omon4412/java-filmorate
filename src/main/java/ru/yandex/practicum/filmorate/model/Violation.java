@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 /**
- * Модель хранения ошибок валидации Spring
+ * Модель хранения ошибок валидации Spring.
  */
 @Getter
 @RequiredArgsConstructor
@@ -13,11 +13,11 @@ import lombok.ToString;
 
 public class Violation {
     /**
-     * Название поля
+     * Название поля.
      */
     private final String fieldName;
     /**
-     * Текст ошибки
+     * Текст ошибки.
      */
     private final String errorMessage;
 }

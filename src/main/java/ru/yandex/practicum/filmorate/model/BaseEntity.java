@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import javax.validation.constraints.NotNull;
 
 /**
- * Абстрактный класс, представляющий базовую сущность с идентификатором и именем
+ * Абстрактный класс, представляющий базовую сущность с идентификатором и именем.
  */
 @Data
 @AllArgsConstructor

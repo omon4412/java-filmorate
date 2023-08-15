@@ -10,11 +10,14 @@ import ru.yandex.practicum.filmorate.storage.mpa.MpaRatingStorage;
 import java.util.Collection;
 
 /**
- * Сервис для работы с рейтингами
+ * Сервис для работы с рейтингами.
  */
 @Service
 @Slf4j
 public class MpaRatingService implements BaseEntityService<MpaRating> {
+    /**
+     * Хранилище ретингов.
+     */
     private final MpaRatingStorage mpaRatingStorage;
 
     @Autowired

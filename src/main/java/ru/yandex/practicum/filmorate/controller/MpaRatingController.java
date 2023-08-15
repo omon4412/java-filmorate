@@ -8,7 +8,7 @@ import ru.yandex.practicum.filmorate.model.MpaRating;
 import ru.yandex.practicum.filmorate.service.MpaRatingService;
 
 /**
- * Контроллер для работы с рейтингом фильмов
+ * Контроллер для работы с рейтингом фильмов.
  * Обрабатывает HTTP-запросы, связанные с рейтингом
  */
 @RestController

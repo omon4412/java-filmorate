@@ -3,13 +3,13 @@ package ru.yandex.practicum.filmorate.storage;
 import java.util.Collection;
 
 /**
- * Общий интерфейс для хранилища данных
+ * Общий интерфейс для хранилища данных.
  *
  * @param <T> Тип данных
  */
 public interface DataStorage<T> {
     /**
-     * Добавляет объект в хранилище
+     * Добавляет объект в хранилище.
      *
      * @param obj Объект
      * @return Добавленный объект
@@ -17,7 +17,7 @@ public interface DataStorage<T> {
     T add(T obj);
 
     /**
-     * Обновляет объект в хранилище
+     * Обновляет объект в хранилище.
      *
      * @param obj Объект
      * @return Обновлённый объект
@@ -25,7 +25,7 @@ public interface DataStorage<T> {
     T update(T obj);
 
     /**
-     * Удаляет объект в хранилище
+     * Удаляет объект в хранилище.
      *
      * @param id Идентификатор объекта
      * @return Удалённый объект
@@ -33,14 +33,14 @@ public interface DataStorage<T> {
     T delete(int id);
 
     /**
-     * Очищает хранилище
+     * Очищает хранилище.
      *
      * @return Количество очищенных объектов
      */
     int clearAll();
 
     /**
-     * Возвращает список всех объектов их хранилища
+     * Возвращает список всех объектов их хранилища.
      *
      * @return Список объектов
      */

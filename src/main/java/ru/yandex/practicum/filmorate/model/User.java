@@ -17,18 +17,18 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Класс, представляющий модель пользователя
+ * Класс, представляющий модель пользователя.
  */
 @Data
 @RequiredArgsConstructor
 public class User {
     /**
-     * Идентификатор пользователя
+     * Идентификатор пользователя.
      */
     protected int id = -1;
 
     /**
-     * Электронная почта пользователя
+     * Электронная почта пользователя.
      */
     @NonNull
     @NotBlank
@@ -37,7 +37,7 @@ public class User {
     protected String email;
 
     /**
-     * Логин пользователя
+     * Логин пользователя.
      */
     @NonNull
     @NotBlank
@@ -45,12 +45,12 @@ public class User {
     protected String login;
 
     /**
-     * Имя пользователя
+     * Имя пользователя.
      */
     protected String name;
 
     /**
-     * День рождения пользователя
+     * День рождения пользователя.
      */
     @Past
     @NonNull
@@ -59,10 +59,15 @@ public class User {
     protected LocalDate birthday;
 
     /**
-     * Множество идентификаторов друзей пользователя
+     * Множество идентификаторов друзей пользователя.
      */
     protected Set<Integer> friendIds = new HashSet<>();
 
+    /**
+     * Конструктор копирования.
+     *
+     * @param other Пользователь, которого нужно скопировать
+     */
     public User(User other) {
         this.id = other.id;
         this.email = other.email;

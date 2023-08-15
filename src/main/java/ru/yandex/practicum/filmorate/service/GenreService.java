@@ -10,11 +10,14 @@ import ru.yandex.practicum.filmorate.storage.genre.GenreStorage;
 import java.util.Collection;
 
 /**
- * Сервис для работы с жанрами
+ * Сервис для работы с жанрами.
  */
 @Service
 @Slf4j
 public class GenreService implements BaseEntityService<Genre> {
+    /**
+     * Хранилище жанров.
+     */
     private final GenreStorage genreStorage;
 
     @Autowired

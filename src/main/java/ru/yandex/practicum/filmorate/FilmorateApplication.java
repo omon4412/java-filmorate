@@ -3,9 +3,17 @@ package ru.yandex.practicum.filmorate;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+/**
+ * Основной класс, который инициализирует и запускает приложение Filmorate.
+ */
 @SpringBootApplication
 public class FilmorateApplication {
 
+    /**
+     * Метод main.
+     *
+     * @param args Аргументы командной строки, переданные приложению.
+     */
     public static void main(String[] args) {
         SpringApplication.run(FilmorateApplication.class, args);
     }

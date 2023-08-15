@@ -18,30 +18,30 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Класс, представляющий модель фильма
+ * Класс, представляющий модель фильма.
  */
 @Data
 public class Film {
     /**
-     * Идентификатор фильма
+     * Идентификатор фильма.
      */
     protected int id = -1;
 
     /**
-     * Название фильма
+     * Название фильма.
      */
     @NonNull
     @NotBlank
     protected String name;
 
     /**
-     * Описание фильма
+     * Описание фильма.
      */
     @Size(max = 200)
     protected String description;
 
     /**
-     * Дата выхода фильма
+     * Дата выхода фильма.
      */
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
@@ -50,18 +50,24 @@ public class Film {
     protected LocalDate releaseDate;
 
     /**
-     * Продолжительность фильма
+     * Продолжительность фильма.
      */
     @Positive
     protected long duration;
 
     /**
-     * Множество идентификаторов пользователей, которые оценили фильм
+     * Множество идентификаторов пользователей, которые оценили фильм.
      */
     protected Set<Integer> userLikeIds = new HashSet<>();
 
+    /**
+     * Рейтинг фильма.
+     */
     @NotNull
     protected MpaRating mpa;
 
+    /**
+     * Жанры фильма.
+     */
     protected Set<Genre> genres = new HashSet<>();
 }

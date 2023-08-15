@@ -15,12 +15,14 @@ import java.sql.Statement;
 import java.util.*;
 
 /**
- * Хранилище для жанров в бд
+ * Хранилище для жанров в бд.
  */
 @Component
 @Slf4j
 public class GenreDbStorage implements GenreStorage {
-
+    /**
+     * JdbcTemplate для взаимодействия с базой данных.
+     */
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired

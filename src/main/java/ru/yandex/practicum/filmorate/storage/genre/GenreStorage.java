@@ -6,11 +6,14 @@ import ru.yandex.practicum.filmorate.util.DebugOnly;
 
 import java.util.Set;
 
+/**
+ * Интерфейс, представляющий хранилище жанров фильмов.
+ */
 public interface GenreStorage extends DataStorage<Genre> {
     Genre getGenreById(int id);
 
     /**
-     * Добавить жанр к к фильму
+     * Добавить жанр к к фильму.
      *
      * @param filmId  id пользователя
      * @param genreId id друга
@@ -18,7 +21,7 @@ public interface GenreStorage extends DataStorage<Genre> {
     void addGenreToFilm(int filmId, int genreId);
 
     /**
-     * Удалить жанр у фильма
+     * Удалить жанр у фильма.
      *
      * @param filmId  id фильма
      * @param genreId id жанра
@@ -26,7 +29,7 @@ public interface GenreStorage extends DataStorage<Genre> {
     void removeGenreFromFilm(int filmId, int genreId);
 
     /**
-     * Получить список жанров фильма
+     * Получить список жанров фильма.
      *
      * @param filmId id фильма
      * @return Список жанров фильма
@@ -34,7 +37,7 @@ public interface GenreStorage extends DataStorage<Genre> {
     Set<Genre> getFilmGenres(int filmId);
 
     /**
-     * ТОЛЬКО ДЛЯ ОТЛАДКИ
+     * ТОЛЬКО ДЛЯ ОТЛАДКИ.
      * Удалить все связи между фильмом и жанрами
      */
     @DebugOnly("Только для отладки!")

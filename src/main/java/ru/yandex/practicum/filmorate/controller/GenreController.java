@@ -8,8 +8,8 @@ import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.service.GenreService;
 
 /**
- * Контроллер для работы с жанрами
- * Обрабатывает HTTP-запросы, связанные с жанрами.
+ * Контроллер для работы с жанрами.
+ * Обрабатывает HTTP-запросы, связанные с жанрами
  */
 @RestController
 @RequestMapping("/genres")

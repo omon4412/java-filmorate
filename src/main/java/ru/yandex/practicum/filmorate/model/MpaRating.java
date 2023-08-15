@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate.model;
 
 /**
- * Класс, представляющий рейтинг фильма
+ * Класс, представляющий рейтинг фильма.
  */
 public class MpaRating extends BaseEntity {
 

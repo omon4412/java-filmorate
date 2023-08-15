@@ -12,13 +12,16 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Контроллер для работы с пользователями
- * Обрабатывает HTTP-запросы, связанные с фильмами.
+ * Контроллер для работы с пользователями.
+ * Обрабатывает HTTP-запросы, связанные с фильмами
  */
 @RestController
 @RequestMapping("/users")
 @Slf4j
 public class UserController {
+    /**
+     * Сервис для управления пользователями.
+     */
     private final UserService userService;
 
     @Autowired
@@ -27,7 +30,7 @@ public class UserController {
     }
 
     /**
-     * Удаляет всех пользователей
+     * Удаляет всех пользователей.
      *
      * @return Количество удалённых пользователей
      */
@@ -37,7 +40,7 @@ public class UserController {
     }
 
     /**
-     * Возвращает список всех пользователей
+     * Возвращает список всех пользователей.
      *
      * @return Список всех пользователей
      */
@@ -47,7 +50,7 @@ public class UserController {
     }
 
     /**
-     * Создаёт пользователя
+     * Создаёт пользователя.
      *
      * @param user Пользователь {@link User} для создания
      * @return Созданный пользователь {@link User}
@@ -58,7 +61,7 @@ public class UserController {
     }
 
     /**
-     * Взвращает пользователя по id
+     * Взвращает пользователя по id.
      *
      * @param userId Id пользователя
      * @return Пользователь {@link User}
@@ -70,7 +73,7 @@ public class UserController {
     }
 
     /**
-     * Обновляет пользователя по id
+     * Обновляет пользователя по id.
      *
      * @param user Пользователь {@link User} для обновления
      * @return Обновлённый пользователь {@link User}
@@ -81,7 +84,7 @@ public class UserController {
     }
 
     /**
-     * Удаляет пользователя по id
+     * Удаляет пользователя по id.
      *
      * @param userId Id пользователя
      * @return Удалённый пользователь {@link User}
@@ -93,7 +96,7 @@ public class UserController {
     }
 
     /**
-     * Добавляет друга пользователю
+     * Добавляет друга пользователю.
      *
      * @param userId   Id пользователя
      * @param friendId Id друга
@@ -107,7 +110,7 @@ public class UserController {
     }
 
     /**
-     * Удалает друга у пользователя
+     * Удалает друга у пользователя.
      *
      * @param userId   Id пользователя
      * @param friendId Id друга
@@ -121,7 +124,7 @@ public class UserController {
     }
 
     /**
-     * Возвращает список друзей пользователя
+     * Возвращает список друзей пользователя.
      *
      * @param userId Id пользователя
      * @return Список друзей
@@ -133,7 +136,7 @@ public class UserController {
     }
 
     /**
-     * Возвращает список общих друзей у двух пользователей
+     * Возвращает список общих друзей у двух пользователей.
      *
      * @param userId   Id пользователя
      * @param friendId Id друга
@@ -147,7 +150,7 @@ public class UserController {
     }
 
     /**
-     * Удалает друга у пользователя
+     * Удалает друга у пользователя.
      *
      * @param userId   Id пользователя
      * @param friendId Id друга

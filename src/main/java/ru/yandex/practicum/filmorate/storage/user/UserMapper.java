@@ -9,14 +9,14 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Маппинг пользователя
+ * Маппинг пользователя.
  */
 public class UserMapper {
     private UserMapper() {
     }
 
     /**
-     * Маппинг строки в объект пользователя
+     * Маппинг строки в объект пользователя.
      *
      * @param resultSet Строка
      * @param num       '

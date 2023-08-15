@@ -16,12 +16,14 @@ import java.util.Collection;
 import java.util.Objects;
 
 /**
- * Хранилище для рейтингов в бд
+ * Хранилище для рейтингов в бд.
  */
 @Component
 @Slf4j
 public class MpaRatingDbStorage implements MpaRatingStorage {
-
+    /**
+     * JdbcTemplate для взаимодействия с базой данных.
+     */
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired

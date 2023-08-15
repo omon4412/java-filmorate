@@ -26,19 +26,36 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Хранилище для фильмов в бд
+ * Хранилище для фильмов в бд.
  */
 @Component("filmDbStorage")
 @Slf4j
 public class FilmDbStorage implements FilmStorage {
+    /**
+     * JdbcTemplate для взаимодействия с базой данных.
+     */
     private final JdbcTemplate jdbcTemplate;
-
+    /**
+     * Хранилище рейтингов.
+     */
     private final MpaRatingDbStorage mpaRatingDbStorage;
-
+    /**
+     * Хранилище жанров.
+     */
     private final GenreStorage genreStorage;
-
+    /**
+     * Хранилище лайков.
+     */
     private final LikeStorage likeStorage;
 
+    /**
+     * Конструктор класса FilmDbStorage.
+     *
+     * @param jdbcTemplate       {@link JdbcTemplate} для взаимодействия с базой данных
+     * @param mpaRatingDbStorage Хранилище рейтингов
+     * @param genreStorage       Хранилище жанров фильмов
+     * @param likeStorage        Хранилище лайков
+     */
     @Autowired
     public FilmDbStorage(JdbcTemplate jdbcTemplate,
                          MpaRatingDbStorage mpaRatingDbStorage,
@@ -72,7 +89,7 @@ public class FilmDbStorage implements FilmStorage {
                 film.setId(generatedKey);
 
                 Set<Genre> genres = film.getGenres();
-                for (var genre : genres) {
+                for (Genre genre : genres) {
                     genreStorage.addGenreToFilm(film.getId(), genre.getId());
                 }
             } catch (NullPointerException ex) {
@@ -96,11 +113,11 @@ public class FilmDbStorage implements FilmStorage {
                 "\"mpa_rating_id\" = ?" +
                 "WHERE \"film_id\" = ?";
         try {
-            for (var genre : getFilmById(film.getId()).getGenres()) {
+            for (Genre genre : getFilmById(film.getId()).getGenres()) {
                 genreStorage.removeGenreFromFilm(film.getId(), genre.getId());
             }
 
-            for (var genre : film.getGenres()) {
+            for (Genre genre : film.getGenres()) {
                 genreStorage.addGenreToFilm(film.getId(), genre.getId());
             }
             List<Genre> sortedList = new ArrayList<>(genreStorage.getFilmGenres(film.getId()));
@@ -209,7 +226,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     /**
-     * Подготовка запроса для дальнейшего получения идентификатора
+     * Подготовка запроса для дальнейшего получения идентификатора.
      *
      * @param film       Фильм
      * @param query      Запрос
@@ -231,7 +248,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     /**
-     * Маппинг строки в объект фильм
+     * Маппинг строки в объект фильм.
      *
      * @param resultSet Строка
      * @param num       '

@@ -3,33 +3,32 @@ package ru.yandex.practicum.filmorate.exception;
 import lombok.Getter;
 
 /**
- * Исключение, выбрасывается, когда были переданы неверные параметры
- * <p>
- * Примеры использования:
+ * Исключение, выбрасывается, когда были переданы неверные параметры.
+ * <p>Примеры использования:
  * <pre>
  *     if (parameter == null) {
  *         throw new IncorrectParameterException("parameter");
  *     }
  *
- *     if (value < 0 || value > 100) {
+ *     if (value &lt; 0 || value &gt; 100) {
  *         throw new IncorrectParameterException("Значение должно быть в диапазоне от 0 до 100", true);
  *     }
  * </pre>
  */
 public class IncorrectParameterException extends RuntimeException {
     /**
-     * Передаваемые данные об ошибке
+     * Передаваемые данные об ошибке.
      */
     @Getter
     private final String parameter;
     /**
-     * Флаг, указывающий на то, являются ли переданные данные сообщением
+     * Флаг, указывающий на то, являются ли переданные данные сообщением.
      */
     @Getter
     private final boolean isMessage;
 
     /**
-     * Конструктор исключения с заданным параметром
+     * Конструктор исключения с заданным параметром.
      *
      * @param parameter некорректный параметр или аргумент, вызвавший исключение
      */
@@ -39,7 +38,7 @@ public class IncorrectParameterException extends RuntimeException {
     }
 
     /**
-     * Конструктор исключения с заданными параметром и флагом сообщения
+     * Конструктор исключения с заданными параметром и флагом сообщения.
      *
      * @param parameter некорректный параметр или аргумент, вызвавший исключение
      * @param isMessage флаг, указывающий, что параметр являются ли переданные данные сообщением

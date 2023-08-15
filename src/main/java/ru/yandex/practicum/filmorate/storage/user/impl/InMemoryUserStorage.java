@@ -10,12 +10,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Реализация {@link UserStorage}
+ * Реализация {@link UserStorage}.
  */
 @Component
 @Slf4j
 public class InMemoryUserStorage implements UserStorage {
+    /**
+     * Мапа для хранения пользователей.
+     */
     private final Map<Integer, User> users = new HashMap<>();
+    /**
+     * Последний сгенерированный id.
+     */
     private int lastId = 0;
 
     @Override
@@ -67,7 +73,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User getUserById(int id) {
-        var user = users.get(id);
+        User user = users.get(id);
         log.debug("Получен пользователь " + user);
         return user;
     }

@@ -9,13 +9,13 @@ import javax.validation.Valid;
 import java.util.Collection;
 
 /**
- * Абстрактный контроллер для управления сущностями {@link BaseEntity}
+ * Абстрактный контроллер для управления сущностями {@link BaseEntity}.
  *
  * @param <T> Тип сущности, наследующей {@link BaseEntity}
  */
 public abstract class BaseEntityController<T extends BaseEntity> {
     /**
-     * Сервис для работы с сущностями
+     * Сервис для работы с сущностями.
      */
     protected final BaseEntityService<T> service;
 
@@ -24,7 +24,7 @@ public abstract class BaseEntityController<T extends BaseEntity> {
     }
 
     /**
-     * Удалить сущность по идентификатору
+     * Удалить сущность по идентификатору.
      *
      * @param id Идентификатор сущности
      * @return Удаленная сущность
@@ -36,7 +36,7 @@ public abstract class BaseEntityController<T extends BaseEntity> {
     }
 
     /**
-     * Получить сущность по идентификатору
+     * Получить сущность по идентификатору.
      *
      * @param id Идентификатор сущности
      * @return Найденная сущность
@@ -48,7 +48,7 @@ public abstract class BaseEntityController<T extends BaseEntity> {
     }
 
     /**
-     * Получить список всех сущностей
+     * Получить список всех сущностей.
      *
      * @return Список всех сущностей
      */
@@ -58,7 +58,7 @@ public abstract class BaseEntityController<T extends BaseEntity> {
     }
 
     /**
-     * Создать новую сущность
+     * Создать новую сущность.
      *
      * @param entity Новая сущность
      * @return Созданная сущность
@@ -69,7 +69,7 @@ public abstract class BaseEntityController<T extends BaseEntity> {
     }
 
     /**
-     * Обновлить сущность
+     * Обновлить сущность.
      *
      * @param entity Сущность для обновления
      * @return Обновленная сущность
@@ -80,7 +80,7 @@ public abstract class BaseEntityController<T extends BaseEntity> {
     }
 
     /**
-     * Удалить все сущности
+     * Удалить все сущности.
      *
      * @return Количество удаленных сущностей
      */

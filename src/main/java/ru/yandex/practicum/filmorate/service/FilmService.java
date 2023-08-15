@@ -18,24 +18,31 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Сервис для работы с фильмами
+ * Сервис для работы с фильмами.
  */
 @Service
 @Slf4j
 public class FilmService {
     /**
-     * Хранилище фильмов
+     * Хранилище фильмов.
      */
     private final FilmStorage filmStorage;
     /**
-     * Хранилище пользователей
+     * Хранилище пользователей.
      */
     private final UserStorage userStorage;
     /**
-     * Хранилище лайков
+     * Хранилище лайков.
      */
     private final LikeStorage likeStorage;
 
+    /**
+     * Констуктор класса FilmService.
+     *
+     * @param filmStorage Хранилище фильмов
+     * @param userStorage Хранилище пользователей
+     * @param likeStorage Хранилище лайков
+     */
     @Autowired
     public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage,
                        @Qualifier("userDbStorage") UserStorage userStorage,
@@ -46,7 +53,7 @@ public class FilmService {
     }
 
     /**
-     * Добавляет фильм в хранилище
+     * Добавляет фильм в хранилище.
      *
      * @param film Фильм {@link Film}
      * @return Добавленный фильм
@@ -58,7 +65,7 @@ public class FilmService {
     }
 
     /**
-     * Обновляет фильм в хранилище
+     * Обновляет фильм в хранилище.
      *
      * @param film Фильм {@link Film}
      * @return Обновлённый фильм
@@ -69,7 +76,7 @@ public class FilmService {
     }
 
     /**
-     * Удаляет фильм из хранилища
+     * Удаляет фильм из хранилища.
      *
      * @param filmId id фильма
      * @return Удалённый фильм
@@ -80,7 +87,7 @@ public class FilmService {
     }
 
     /**
-     * Возвращает фильм по его id
+     * Возвращает фильм по его id.
      *
      * @param id id фильма
      * @return Найденный фильм
@@ -91,7 +98,7 @@ public class FilmService {
     }
 
     /**
-     * Возвращает список всех фильмов
+     * Возвращает список всех фильмов.
      *
      * @return Список всех фильмов
      */
@@ -100,7 +107,7 @@ public class FilmService {
     }
 
     /**
-     * Удаляет все фильмы из хранилища
+     * Удаляет все фильмы из хранилища.
      *
      * @return Количество удалённых фильмов
      */
@@ -109,7 +116,7 @@ public class FilmService {
     }
 
     /**
-     * Обновляет лайк у фильма от пользователя
+     * Обновляет лайк у фильма от пользователя.
      *
      * @param filmId    id фильма
      * @param userId    id пользователя
@@ -132,7 +139,7 @@ public class FilmService {
     }
 
     /**
-     * Возвращает количество лайков у фильма
+     * Возвращает количество лайков у фильма.
      *
      * @param filmId id фильма
      * @return Количество лайков
@@ -146,7 +153,7 @@ public class FilmService {
 
     /**
      * Возврящает список популярных фильмов
-     * в порядке убывания лайков
+     * в порядке убывания лайков.
      *
      * @param count Количество фильмов в списке
      * @return Список популярных фильмов
@@ -163,7 +170,7 @@ public class FilmService {
     }
 
     /**
-     * Проверка на существование пользователя
+     * Проверка на существование пользователя.
      *
      * @param id id Пользователя
      * @throws UserNotFoundException Если пользователь не нейден
@@ -178,10 +185,10 @@ public class FilmService {
     }
 
     /**
-     * Проверка на существование пользователя
+     * Проверка на существование фильма.
      *
-     * @param id id Пользователя
-     * @throws UserNotFoundException Если пользователь не найден
+     * @param id id фильма
+     * @throws FilmNotFoundException Если фильм не найден
      */
     private void checkFilmForExists(int id) throws FilmNotFoundException {
         if (!filmStorage.checkForExists(id)) {

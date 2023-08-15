@@ -10,14 +10,25 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Реализация {@link FilmStorage}
+ * Реализация {@link FilmStorage}.
  */
 @Component
 @Slf4j
 public class InMemoryFilmStorage implements FilmStorage {
+    /**
+     * Мапа для хранения фильмов.
+     */
     private final Map<Integer, Film> films = new HashMap<>();
+    /**
+     * Последнее сгенерированное id.
+     */
     private int lastId = 0;
 
+    /**
+     * Сгенерировать id.
+     *
+     * @return id
+     */
     protected int generateId() {
         return ++lastId;
     }
@@ -63,7 +74,7 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film getFilmById(int id) {
-        var film = films.get(id);
+        Film film = films.get(id);
         log.debug("Получен фильм " + film);
         return film;
     }

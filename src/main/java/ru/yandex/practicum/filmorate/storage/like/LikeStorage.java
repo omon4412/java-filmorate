@@ -4,9 +4,12 @@ import ru.yandex.practicum.filmorate.util.DebugOnly;
 
 import java.util.Set;
 
+/**
+ * Интерфейс, представляющий хранилище лайков.
+ */
 public interface LikeStorage {
     /**
-     * Добавить лайк фильму
+     * Добавить лайк фильму.
      *
      * @param filmId id фильма
      * @param userId id пользователя
@@ -14,7 +17,7 @@ public interface LikeStorage {
     void addLikeToFilm(int filmId, int userId);
 
     /**
-     * Удалить лайк у фильма
+     * Удалить лайк у фильма.
      *
      * @param filmId id фильма
      * @param userId id пользователя
@@ -23,7 +26,7 @@ public interface LikeStorage {
 
     /**
      * Получить список идентификаторов пользователей
-     * лайкнувших фильм
+     * лайкнувших фильм.
      *
      * @param filmId id фильма
      * @return Список идентификаторов пользователей
@@ -31,7 +34,7 @@ public interface LikeStorage {
     Set<Integer> getUsersLikesIds(int filmId);
 
     /**
-     * Получить количество лайков у фильма
+     * Получить количество лайков у фильма.
      *
      * @param filmId id фильма
      * @return Количество лайков
@@ -39,7 +42,7 @@ public interface LikeStorage {
     int getLikesCount(int filmId);
 
     /**
-     * ТОЛЬКО ДЛЯ ОТЛАДКИ
+     * ТОЛЬКО ДЛЯ ОТЛАДКИ.
      * Удалить все связи между друзьями
      */
     @DebugOnly("Только для отладки!")
