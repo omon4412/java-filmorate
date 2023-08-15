@@ -6,6 +6,16 @@ ru.yandex.practicum.filmorate.model
 ru.yandex.practicum.filmorate.service
 ru.yandex.practicum.filmorate.storage
 ru.yandex.practicum.filmorate.storage.film
+ru.yandex.practicum.filmorate.storage.film.impl
+ru.yandex.practicum.filmorate.storage.friend
+ru.yandex.practicum.filmorate.storage.friend.impl
+ru.yandex.practicum.filmorate.storage.genre
+ru.yandex.practicum.filmorate.storage.genre.impl
+ru.yandex.practicum.filmorate.storage.like
+ru.yandex.practicum.filmorate.storage.like.impl
+ru.yandex.practicum.filmorate.storage.mpa
+ru.yandex.practicum.filmorate.storage.mpa.impl
 ru.yandex.practicum.filmorate.storage.user
+ru.yandex.practicum.filmorate.storage.user.impl
 ru.yandex.practicum.filmorate.util
 ru.yandex.practicum.filmorate.validation
