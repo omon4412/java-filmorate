@@ -12,6 +12,7 @@ import ru.yandex.practicum.filmorate.exception.*;
 import ru.yandex.practicum.filmorate.model.ErrorResponse;
 import ru.yandex.practicum.filmorate.model.Violation;
 import ru.yandex.practicum.filmorate.validation.LocalDateDeserializer;
+import ru.yandex.practicum.filmorate.validation.LocalDateSerializer;
 
 import javax.validation.ConstraintViolationException;
 import java.time.LocalDate;
@@ -19,13 +20,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Обработчик всех исключений
+ * Обработчик всех исключений.
  */
 @RestControllerAdvice
 @Slf4j
 public class ErrorHandler {
     /**
-     * Обработчик исключения {@link IncorrectParameterException}
+     * Обработчик исключения {@link IncorrectParameterException}.
      * Возникает когда были переданны входные параметры в неверном формате
      *
      * @param e Исключение {@link IncorrectParameterException}
@@ -44,7 +45,7 @@ public class ErrorHandler {
     }
 
     /**
-     * Обработчик исключения {@link FilmNotFoundException}
+     * Обработчик исключения {@link FilmNotFoundException}.
      * Возникает когда искомый фильм не найден
      *
      * @param e Исключение {@link FilmNotFoundException}
@@ -59,7 +60,7 @@ public class ErrorHandler {
     }
 
     /**
-     * Обработчик исключения {@link UserNotFoundException}
+     * Обработчик исключения {@link UserNotFoundException}.
      * Возникает когда искомый пользователь не найден
      *
      * @param e Исключение {@link UserNotFoundException}
@@ -74,7 +75,7 @@ public class ErrorHandler {
     }
 
     /**
-     * Обработчик исключения {@link UserAlreadyExistException}
+     * Обработчик исключения {@link UserAlreadyExistException}.
      * Возникает когда пользователь уже существует
      *
      * @param e Исключение {@link UserAlreadyExistException}
@@ -89,27 +90,31 @@ public class ErrorHandler {
     }
 
     /**
-     * Обработчик исключения {@link IncorrectParameterException}
-     * Возникает когда внутри {@link LocalDateDeserializer} или {@link LocalDateDeserializer}
+     * Обработчик исключения {@link IncorrectParameterException}.
+     * Возникает когда внутри {@link LocalDateDeserializer} или {@link LocalDateSerializer}
      * возникает исключение при парсинге {@link LocalDate}
      *
      * @param e Исключение {@link HttpMessageNotReadableException}
      * @return Объект {@link ErrorResponse} c информацией об ошибке
+     * @throws RuntimeException Когда ошибка не соотвествует ниодной из условия
      */
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleLocalDateParseErrorException(final HttpMessageNotReadableException e) {
+    public ErrorResponse handleLocalDateParseErrorException(final HttpMessageNotReadableException e)
+            throws RuntimeException {
         Throwable localDateParseError = e.getCause().getCause();
         if (localDateParseError instanceof IncorrectParameterException) {
             IncorrectParameterException error = (IncorrectParameterException) localDateParseError;
             return new ErrorResponse(error.getParameter());
+        } else if (localDateParseError instanceof NullPointerException) {
+            return new ErrorResponse("Дата не должна быть null");
         } else {
             throw new RuntimeException();
         }
     }
 
     /**
-     * Обработчик исключения {@link FilmAlreadyExistException}
+     * Обработчик исключения {@link FilmAlreadyExistException}.
      * Возникает когда фильм уже существует
      *
      * @param e Исключение {@link FilmAlreadyExistException}
@@ -124,7 +129,37 @@ public class ErrorHandler {
     }
 
     /**
-     * Обработчик исключения {@link ConstraintViolationException}
+     * Обработчик исключения {@link GenreNotFoundException}.
+     * Возникает когда искомый жанр не найден
+     *
+     * @param e Исключение {@link GenreNotFoundException}
+     * @return Объект {@link ErrorResponse} c информацией об ошибке
+     */
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleGenreNotFoundException(final GenreNotFoundException e) {
+        return new ErrorResponse(
+                e.getMessage()
+        );
+    }
+
+    /**
+     * Обработчик исключения {@link MpaRatingNotFoundException}.
+     * Возникает когда искомый рейтинг не найден
+     *
+     * @param e Исключение {@link MpaRatingNotFoundException}
+     * @return Объект {@link ErrorResponse} c информацией об ошибке
+     */
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleGenreNotFoundException(final MpaRatingNotFoundException e) {
+        return new ErrorResponse(
+                e.getMessage()
+        );
+    }
+
+    /**
+     * Обработчик исключения {@link ConstraintViolationException}.
      * Возникает когда действие нарушает ограничение на структуру модели
      *
      * @param e Исключение {@link ConstraintViolationException}
@@ -147,7 +182,7 @@ public class ErrorHandler {
     }
 
     /**
-     * Обработчик исключения {@link MethodArgumentNotValidException}
+     * Обработчик исключения {@link MethodArgumentNotValidException}.
      * Возникает когда проверка аргумента с аннотацией @Valid не удалась
      *
      * @param e Исключение {@link MethodArgumentNotValidException}
@@ -166,7 +201,7 @@ public class ErrorHandler {
     }
 
     /**
-     * Обработчик исключения {@link HttpRequestMethodNotSupportedException}
+     * Обработчик исключения {@link HttpRequestMethodNotSupportedException}.
      * Возникает когда обработчик запросов не поддерживает определенный метод запроса
      *
      * @param e Исключение {@link HttpRequestMethodNotSupportedException}
@@ -179,7 +214,7 @@ public class ErrorHandler {
     }
 
     /**
-     * Обработчик всевозможных исключений во время работы программы
+     * Обработчик всевозможных исключений во время работы программы.
      *
      * @param e Исключение {@link Throwable}
      * @return Объект {@link ErrorResponse} c информацией об ошибке

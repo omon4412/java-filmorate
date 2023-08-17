@@ -1,22 +1,34 @@
-package ru.yandex.practicum.filmorate.storage.film;
+package ru.yandex.practicum.filmorate.storage.film.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Реализация {@link FilmStorage}
+ * Реализация {@link FilmStorage}.
  */
 @Component
 @Slf4j
 public class InMemoryFilmStorage implements FilmStorage {
+    /**
+     * Мапа для хранения фильмов.
+     */
     private final Map<Integer, Film> films = new HashMap<>();
+    /**
+     * Последнее сгенерированное id.
+     */
     private int lastId = 0;
 
+    /**
+     * Сгенерировать id.
+     *
+     * @return id
+     */
     protected int generateId() {
         return ++lastId;
     }
@@ -37,9 +49,10 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film delete(Film film) {
-        log.debug("Фильм удалён - " + film);
+    public Film delete(int id) {
+        Film film = getFilmById(id);
         films.remove(film.getId());
+        log.debug("Фильм удалён - " + film);
         return film;
     }
 
@@ -50,13 +63,18 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
+    public boolean checkForExists(int id) {
+        return false;
+    }
+
+    @Override
     public Map<Integer, Film> getFilmsMap() {
         return films;
     }
 
     @Override
     public Film getFilmById(int id) {
-        var film = films.get(id);
+        Film film = films.get(id);
         log.debug("Получен фильм " + film);
         return film;
     }
@@ -69,5 +87,4 @@ public class InMemoryFilmStorage implements FilmStorage {
         log.debug("Фильмы очищены - " + count);
         return count;
     }
-
 }

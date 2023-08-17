@@ -15,10 +15,13 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.*;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.MpaRating;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.util.LocalDateAdapter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -34,6 +37,7 @@ class FilmControllerTest {
     @Autowired
     private TestRestTemplate restTemplate;
     private static final HttpHeaders headers = new HttpHeaders();
+
     @Autowired
     private MockMvc mockMvc;
     private String filmBaseUrl;
@@ -48,6 +52,7 @@ class FilmControllerTest {
         userBaseUrl = "http://localhost:" + port + "/users";
         testFilm = new Film("Test film", LocalDate.now().minusMonths(1));
         testFilm.setDuration(100);
+        testFilm.setMpa(new MpaRating(1, "G"));
         gson = new GsonBuilder()
                 .setPrettyPrinting()
                 .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
@@ -68,6 +73,43 @@ class FilmControllerTest {
         mockMvc.perform(delete(userBaseUrl)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+    }
+
+    @BeforeEach
+    void clearRatingAndGenre() throws Exception {
+        mockMvc.perform(delete("/mpa")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        mockMvc.perform(delete("/genres")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        List<MpaRating> mpas = List.of(new MpaRating(0, "G"),
+                new MpaRating(0, "PG"),
+                new MpaRating(0, "PG-13"),
+                new MpaRating(0, "R"),
+                new MpaRating(0, "NC-17"));
+
+        for (MpaRating mpa : mpas) {
+            String jsonMpa = gson.toJson(mpa);
+            mockMvc.perform(post("/mpa").content(jsonMpa)
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk());
+        }
+
+        List<Genre> genres = List.of(new Genre(0, "Комедия"),
+                new Genre(0, "Драма"),
+                new Genre(0, "Мультфильм"),
+                new Genre(0, "Триллер"),
+                new Genre(0, "Документальный"),
+                new Genre(0, "Боевик"));
+
+        for (Genre genre : genres) {
+            String jsonGenre = gson.toJson(genre);
+            mockMvc.perform(post("/genres").content(jsonGenre)
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk());
+        }
     }
 
     @Test
@@ -190,6 +232,7 @@ class FilmControllerTest {
         Film film = new Film("New name", LocalDate.now().minusMonths(10));
         film.setId(1);
         film.setDuration(12);
+        film.setMpa(new MpaRating(1, "G"));
         jsonFilm = gson.toJson(film);
 
         var result = mockMvc.perform(put(filmBaseUrl).content(jsonFilm)
@@ -228,6 +271,7 @@ class FilmControllerTest {
         JsonElement jsonElement = JsonParser.parseString(film);
         Film returnedFilm = gson.fromJson(jsonElement, Film.class);
         testFilm.setId(1);
+        testFilm.setMpa(new MpaRating(1, "G"));
         assertEquals(testFilm, returnedFilm);
     }
 
@@ -333,11 +377,10 @@ class FilmControllerTest {
         int likesCount = JsonParser.parseString(result).getAsInt();
         assertEquals(1, likesCount);
 
-        result = mockMvc.perform(get(filmBaseUrl + "/1"))
+        result = mockMvc.perform(get(filmBaseUrl + "/1/like"))
                 .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
 
-        JsonElement film = JsonParser.parseString(result).getAsJsonObject();
-        assertEquals(1, gson.fromJson(film, Film.class).getUserLikeIds().size());
+        assertEquals(1, Integer.parseInt(result));
     }
 
     @Test
@@ -372,11 +415,10 @@ class FilmControllerTest {
         int likesCount = JsonParser.parseString(result).getAsInt();
         assertEquals(1, likesCount);
 
-        result = mockMvc.perform(get(filmBaseUrl + "/1"))
+        result = mockMvc.perform(get(filmBaseUrl + "/1/like"))
                 .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
 
-        JsonElement film = JsonParser.parseString(result).getAsJsonObject();
-        assertEquals(1, gson.fromJson(film, Film.class).getUserLikeIds().size());
+        assertEquals(1, Integer.parseInt(result));
 
 
         mockMvc.perform(delete(filmBaseUrl + "/1/like/1"))
@@ -388,16 +430,21 @@ class FilmControllerTest {
         likesCount = JsonParser.parseString(result).getAsInt();
         assertEquals(0, likesCount);
 
-        result = mockMvc.perform(get(filmBaseUrl + "/1"))
+        result = mockMvc.perform(get(filmBaseUrl + "/1/like"))
                 .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
 
-        film = JsonParser.parseString(result).getAsJsonObject();
-        assertEquals(0, gson.fromJson(film, Film.class).getUserLikeIds().size());
+        assertEquals(0, Integer.parseInt(result));
     }
 
     @Test
     public void shouldAdd2LikesToFilm() throws Exception {
+        System.out.println(filmBaseUrl);
+        System.out.println(userBaseUrl);
+
         String jsonFilm = gson.toJson(testFilm);
+
+        System.out.println(testFilm);
+        System.out.println(jsonFilm);
 
         mockMvc.perform(post(filmBaseUrl)
                         .content(jsonFilm)
@@ -521,9 +568,8 @@ class FilmControllerTest {
         var result = mockMvc.perform(get(filmBaseUrl + "/popular"))
                 .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
 
-        JsonElement film = JsonParser.parseString(result).getAsJsonArray().get(0).getAsJsonObject();
-        assertEquals(1, gson.fromJson(film, Film.class).getUserLikeIds().size());
-        assertEquals(1, gson.fromJson(film, Film.class).getUserLikeIds().stream().findFirst().get().intValue());
+        int count = JsonParser.parseString(result).getAsJsonArray().size();
+        assertEquals(1, count);
     }
 
     @Test
@@ -569,20 +615,16 @@ class FilmControllerTest {
         var result = mockMvc.perform(get(filmBaseUrl + "/popular"))
                 .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
 
-        JsonElement film = JsonParser.parseString(result).getAsJsonArray().get(0).getAsJsonObject();
-        assertEquals(2, gson.fromJson(film, Film.class).getUserLikeIds().size());
-        assertEquals(1, gson.fromJson(film, Film.class).getUserLikeIds().stream().findFirst().get().intValue());
-        assertEquals(2, gson.fromJson(film, Film.class).getUserLikeIds().stream()
-                .skip(1).findFirst().get().intValue());
+        assertEquals(1, JsonParser.parseString(result).getAsJsonArray().size());
+
+        result = mockMvc.perform(get(filmBaseUrl + "/1/like"))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+        assertEquals(2, Integer.parseInt(result));
 
         result = mockMvc.perform(get(filmBaseUrl + "/popular?count=1"))
                 .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
 
-        film = JsonParser.parseString(result).getAsJsonArray().get(0).getAsJsonObject();
-        assertEquals(2, gson.fromJson(film, Film.class).getUserLikeIds().size());
-        assertEquals(1, gson.fromJson(film, Film.class).getUserLikeIds().stream().findFirst().get().intValue());
-        assertEquals(2, gson.fromJson(film, Film.class).getUserLikeIds().stream()
-                .skip(1).findFirst().get().intValue());
+        assertEquals(1, JsonParser.parseString(result).getAsJsonArray().size());
     }
 
     @Test

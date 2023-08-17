@@ -1,9 +1,12 @@
 package ru.yandex.practicum.filmorate.model;
 
 /**
- * Модель объекта ошибки для возврата клиенту
+ * Модель объекта ошибки для возврата клиенту.
  */
 public class ErrorResponse {
+    /**
+     * Текст ошибки.
+     */
     private final String error;
 
     public ErrorResponse(String error) {

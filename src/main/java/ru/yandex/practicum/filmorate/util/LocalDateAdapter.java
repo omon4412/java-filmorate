@@ -9,10 +9,13 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Адаптер для роботы с {@link LocalDate}
+ * Адаптер для роботы с {@link LocalDate}.
  * Нужно для использования свого сериализатора и дессериализатора
  */
 public class LocalDateAdapter extends TypeAdapter<LocalDate> {
+    /**
+     * Шаблон для даты.
+     */
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Constants.dataTimeFormat);
 
     @Override

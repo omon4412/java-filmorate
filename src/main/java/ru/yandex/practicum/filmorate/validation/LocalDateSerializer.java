@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Сериализатор {@link LocalDate}
+ * Сериализатор {@link LocalDate}.
  */
 public class LocalDateSerializer extends JsonSerializer<LocalDate> {
     @Override

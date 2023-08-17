@@ -2,64 +2,70 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.filmorate.exception.FilmAlreadyExistException;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.like.LikeStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Сервис для работы с фильмами
+ * Сервис для работы с фильмами.
  */
 @Service
 @Slf4j
 public class FilmService {
     /**
-     * Хранилище фильмов
+     * Хранилище фильмов.
      */
     private final FilmStorage filmStorage;
     /**
-     * Хранилище пользователей
+     * Хранилище пользователей.
      */
     private final UserStorage userStorage;
     /**
-     * Мапа для хранения фильмов по их id
+     * Хранилище лайков.
      */
-    private Map<Integer, Film> films = new HashMap<>();
+    private final LikeStorage likeStorage;
 
+    /**
+     * Констуктор класса FilmService.
+     *
+     * @param filmStorage Хранилище фильмов
+     * @param userStorage Хранилище пользователей
+     * @param likeStorage Хранилище лайков
+     */
     @Autowired
-    public FilmService(FilmStorage filmStorage, UserStorage userStorage) {
+    public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage,
+                       @Qualifier("userDbStorage") UserStorage userStorage,
+                       LikeStorage likeStorage) {
         this.filmStorage = filmStorage;
         this.userStorage = userStorage;
+        this.likeStorage = likeStorage;
     }
 
     /**
-     * Добавляет фильм в хранилище
+     * Добавляет фильм в хранилище.
      *
      * @param film Фильм {@link Film}
      * @return Добавленный фильм
      * @throws FilmAlreadyExistException Если фильм уже существует
      */
+    @Transactional
     public Film addFilm(Film film) {
-        pullFromStorage();
-        if (films.values()
-                .stream()
-                .anyMatch(f -> f.getName()
-                        .equals(film.getName()))) {
-            log.error("Фильм с {} уже существует", film.getName());
-            throw new FilmAlreadyExistException("Фильм с " + film.getName() + " уже существует");
-        }
         return filmStorage.add(film);
     }
 
     /**
-     * Обновляет фильм в хранилище
+     * Обновляет фильм в хранилище.
      *
      * @param film Фильм {@link Film}
      * @return Обновлённый фильм
@@ -70,21 +76,18 @@ public class FilmService {
     }
 
     /**
-     * Удаляет фильм из хранилища
+     * Удаляет фильм из хранилища.
      *
      * @param filmId id фильма
      * @return Удалённый фильм
      */
     public Film deleteFilm(int filmId) {
         checkFilmForExists(filmId);
-
-        Film film = filmStorage.getFilmById(filmId);
-
-        return filmStorage.delete(film);
+        return filmStorage.delete(filmId);
     }
 
     /**
-     * Возвращает фильм по его id
+     * Возвращает фильм по его id.
      *
      * @param id id фильма
      * @return Найденный фильм
@@ -95,7 +98,7 @@ public class FilmService {
     }
 
     /**
-     * Возвращает список всех фильмов
+     * Возвращает список всех фильмов.
      *
      * @return Список всех фильмов
      */
@@ -104,7 +107,7 @@ public class FilmService {
     }
 
     /**
-     * Удаляет все фильмы из хранилища
+     * Удаляет все фильмы из хранилища.
      *
      * @return Количество удалённых фильмов
      */
@@ -113,7 +116,7 @@ public class FilmService {
     }
 
     /**
-     * Обновляет лайк у фильма от пользователя
+     * Обновляет лайк у фильма от пользователя.
      *
      * @param filmId    id фильма
      * @param userId    id пользователя
@@ -126,39 +129,37 @@ public class FilmService {
 
         Film film = filmStorage.getFilmById(filmId);
         if (isAddLike) {
-            film.getUserLikeIds().add(userId);
+            likeStorage.addLikeToFilm(filmId, userId);
             log.debug("Пользователь id={} поставил лайк фильму id={}", userId, filmId);
         } else {
-            film.getUserLikeIds().remove(userId);
-            log.debug("Пользователь id={} убрал лайк фильму id={}", userId, filmId);
+            likeStorage.removeLikeFromFilm(filmId, userId);
+            log.debug("Пользователь id={} убрал лайк у фильма id={}", userId, filmId);
         }
         return filmStorage.update(film);
     }
 
     /**
-     * Возвращает количество лайков у фильма
+     * Возвращает количество лайков у фильма.
      *
      * @param filmId id фильма
      * @return Количество лайков
      */
     public int getFilmLikesCount(int filmId) {
         checkFilmForExists(filmId);
-        Film film = filmStorage.getFilmById(filmId);
-        int count = film.getUserLikeIds().size();
+        int count = likeStorage.getUsersLikesIds(filmId).size();
         log.debug("Лайков у фильма id={} - {}", filmId, count);
         return count;
     }
 
     /**
      * Возврящает список популярных фильмов
-     * в порядке убывания лайков
+     * в порядке убывания лайков.
      *
      * @param count Количество фильмов в списке
      * @return Список популярных фильмов
      */
     public List<Film> getPopularFilms(int count) {
-        pullFromStorage();
-        List<Film> filmsList = new ArrayList<>(films.values());
+        List<Film> filmsList = new ArrayList<>(filmStorage.getAllObjList());
         Comparator<Film> comparator = Comparator.comparing(f -> f.getUserLikeIds().size());
         filmsList.sort(comparator.reversed());
         log.debug("Запрошено {} фильмов", count);
@@ -169,7 +170,7 @@ public class FilmService {
     }
 
     /**
-     * Проверка на существование пользователя
+     * Проверка на существование пользователя.
      *
      * @param id id Пользователя
      * @throws UserNotFoundException Если пользователь не нейден
@@ -184,24 +185,16 @@ public class FilmService {
     }
 
     /**
-     * Проверка на существование фильма
+     * Проверка на существование фильма.
      *
-     * @param id id Фильма
-     * @throws FilmNotFoundException Если фильм не нейден
+     * @param id id фильма
+     * @throws FilmNotFoundException Если фильм не найден
      */
     private void checkFilmForExists(int id) throws FilmNotFoundException {
-        pullFromStorage();
-        if (!films.containsKey(id)) {
-            log.error("Фильм с id {} не существует", id);
+        if (!filmStorage.checkForExists(id)) {
+            log.error("Фильма с id={} не существует", id);
             throw new FilmNotFoundException(
-                    "Фильма с id " + id + " не существует");
+                    "Фильма с id=" + id + " не существует");
         }
-    }
-
-    /**
-     * Получение всех фильмов из хранилища
-     */
-    private void pullFromStorage() {
-        films = filmStorage.getFilmsMap();
     }
 }

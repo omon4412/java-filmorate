@@ -1,20 +1,27 @@
-package ru.yandex.practicum.filmorate.storage.user;
+package ru.yandex.practicum.filmorate.storage.user.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Реализация {@link UserStorage}
+ * Реализация {@link UserStorage}.
  */
 @Component
 @Slf4j
 public class InMemoryUserStorage implements UserStorage {
+    /**
+     * Мапа для хранения пользователей.
+     */
     private final Map<Integer, User> users = new HashMap<>();
+    /**
+     * Последний сгенерированный id.
+     */
     private int lastId = 0;
 
     @Override
@@ -33,7 +40,8 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User delete(User user) {
+    public User delete(int id) {
+        User user = getUserById(id);
         log.debug("Пользователь удалён - " + user);
         users.remove(user.getId());
         return user;
@@ -65,8 +73,41 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User getUserById(int id) {
-        var user = users.get(id);
+        User user = users.get(id);
         log.debug("Получен пользователь " + user);
         return user;
+    }
+
+    @Override
+    public User getUserByEmail(String email) {
+        for (User user : users.values()) {
+            if (user.getEmail().equals(email)) {
+                log.debug("Получен пользователь " + user);
+                return user;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public User getUserByLogin(String login) {
+        for (User user : users.values()) {
+            if (user.getLogin().equals(login)) {
+                log.debug("Получен пользователь " + user);
+                return user;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public boolean checkForExists(int id) {
+        if (users.get(id) == null) {
+            log.error("Фильм с id {} не существует", id);
+            return false;
+        } else {
+            log.error("Пользователь с id={} существует", id);
+            return true;
+        }
     }
 }
